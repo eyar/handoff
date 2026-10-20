@@ -1,0 +1,19 @@
+project_id = "kljzghiiovsvymixqgrf"
+
+# All functions are called without a user session (the app has no accounts), so JWT verification is off.
+
+[functions.r2-sign]
+# Signs upload/download URLs for a room; called from the browser with the publishable key
+verify_jwt = false
+
+[functions.shortcut-upload]
+# Called from the iOS Shortcut
+verify_jwt = false
+
+[functions.cleanup-storage]
+# Called by pg_cron every 10 minutes
+verify_jwt = false
+
+[functions.notify-telemetry]
+# Called by the client_errors trigger (pg_net)
+verify_jwt = false

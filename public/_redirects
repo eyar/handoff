@@ -1,0 +1,2 @@
+# Fallback for Web Share Target if SW is bypassed or updating
+/share-target  /?shared=1  302

@@ -1,0 +1,37 @@
+{
+  "name": "handoff",
+  "version": "0.1.0",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "dev": "serve public -c serve.json -l 3000",
+    "start": "serve public -c serve.json -l 3000",
+    "build": "node build.js",
+    "lint": "node --check public/app.js && node --check public/modules/*.js",
+    "test": "node --import ./tests/helpers/register.mjs --test tests/*.test.js",
+    "tunnel": "cloudflared tunnel run handoff",
+    "tunnel:quick": "cloudflared tunnel --url http://localhost:3000",
+    "purge": "node scripts/purge-cf-cache.js",
+    "takedown": "node scripts/takedown.js",
+    "kill-switch:status": "node scripts/kill-switch.js status",
+    "kill-switch:on": "node scripts/kill-switch.js on",
+    "kill-switch:off": "node scripts/kill-switch.js off",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "keepalive": "node scripts/keepalive-supabase.js",
+    "package:extension": "node scripts/package-extension.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
+    "jsqr": "^1.4.0",
+    "qrcode-generator": "^2.0.4",
+    "serve": "^14.2.6"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.13.0"
+  }
+}

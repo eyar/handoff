@@ -1,0 +1,34 @@
+{
+  "public": "public",
+  "rewrites": [
+    { "source": "/share-target", "destination": "/index.html" }
+  ],
+  "redirects": [
+    { "source": "/refunds", "destination": "/terms.html", "type": 301 },
+    { "source": "/refunds.html", "destination": "/terms.html", "type": 301 }
+  ],
+  "headers": [
+    {
+      "source": "**/*.shortcut",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/x-tools-shortcut"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"Handoff to PC.shortcut\""
+        }
+      ]
+    },
+    {
+      "source": "**/*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ]
+}

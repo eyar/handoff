@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101828" />
+    <title>Terms and Conditions — Handoff</title>
+    <meta name="description" content="Terms and Conditions of Use for Handoff temporary device-to-device relay." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="legal-shell">
+      <nav class="legal-nav-bar" aria-label="Main Navigation">
+        <a href="/" class="nav-back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Back to Handoff</span>
+        </a>
+      </nav>
+
+      <article class="legal-card">
+        <header class="legal-header">
+          <p class="kicker">Legal Agreement</p>
+          <h1>Terms and Conditions</h1>
+          <div class="legal-meta">
+            <span class="pill">Version 1.3</span>
+            <span>Effective Date: October 19, 2026</span>
+          </div>
+        </header>
+
+        <div class="legal-content">
+          <div class="legal-callout">
+            <strong>Key Summary:</strong> Handoff is an ephemeral, temporary transfer tool designed to quickly move text and files between your own devices without creating accounts. Text and files sent from the Handoff app are protected by client-side zero-knowledge end-to-end encryption, with the limited exceptions described below. Files and messages are automatically destroyed after transfer and are never retained as a permanent backup.
+          </div>
+
+          <h2>1. Agreement to Terms &amp; Eligibility</h2>
+          <p>
+            These Terms and Conditions ("Terms") constitute a legally binding agreement between you ("User", "you", or "your") and Handoff ("we", "us", or "our"), governing your access to and use of the Handoff website, services, and applications (collectively, the "Service").
+          </p>
+          <p>
+            <strong>Age &amp; Legal Capacity:</strong> You represent and warrant that you are at least 18 years of age (or the age of legal majority in your jurisdiction) and possess the legal capacity to form a binding contract. If you are between the ages of 13 and 18 (or the age of majority in your jurisdiction), you may only use the Service with the consent and under the supervision of a parent or legal guardian who agrees to be bound by these Terms. The Service is not directed to or permitted for use by individuals under 13 years of age.
+          </p>
+          <p>
+            By accessing or using the Service, generating a handoff room, scanning a pairing QR code, or uploading any content, you expressly agree to be bound by these Terms. If you do not agree to these Terms, you must not access or use the Service.
+          </p>
+
+          <h2>2. Description of the Service &amp; Ephemeral Architecture</h2>
+          <p>
+            Handoff provides a lightweight, browser-based relay system enabling users to transfer short text snippets and files between paired devices (e.g., between a mobile phone and a personal computer) without requiring user registration, passwords, or personal account creation.
+          </p>
+          <p>
+            <strong>Strictly Ephemeral Nature &amp; Cryptographic Architecture:</strong> The Service is designed from the ground up for real-time, transient relay.
+          </p>
+          <ul>
+            <li><strong>Text Transfers:</strong> Text messages sent from the Handoff app are encrypted client-side using zero-knowledge 256-bit AES-GCM and broadcasted in-memory between paired devices via encrypted real-time data channels. Text automatically clears from the screen when copied, shared, or after 1 minute of inactivity, and is never written to or stored in any persistent database.</li>
+            <li><strong>File Transfers:</strong> Files sent from the Handoff app, of any size up to 1.5 GB, are automatically encrypted client-side using zero-knowledge 256-bit AES-GCM before upload, meaning only ciphertext is staged in temporary cloud storage. The following are transmitted via encrypted HTTPS / TLS 1.3 channels without client-side encryption: text and files sent with the iPhone Shortcut (Apple Shortcuts cannot access your browser's encryption key), and files over 200 MB sent before the receiving device has connected, to a device whose browser cannot decrypt large files on the device (such as iPhones on older iOS versions), or to a device running an outdated version of Handoff. Staged files exist strictly to enable download by the paired receiving device.</li>
+            <li><strong>Automated Deletion:</strong> All uploaded files are permanently deleted upon download or sharing by the receiving device, upon room termination, or automatically when they expire after <strong>15 minutes</strong>. Scheduled automated cleanup runs regularly to permanently remove expired files from temporary storage.</li>
+            <li><strong>Encryption Keys &amp; User Security:</strong> Ephemeral encryption keys are generated locally within your browser and transferred to your paired device exclusively via the QR code and URL hash fragment (<code>#key=...</code>). Handoff servers never receive, log, or store your encryption keys. You are solely responsible for maintaining the confidentiality of your pairing QR code and session link. Anyone who scans your QR code or accesses your session link with its key fragment has the technical ability to decrypt data transferred within that active session.</li>
+            <li><strong>Not a Cloud Backup:</strong> Handoff is <strong>not</strong> an archival or storage service. You are solely responsible for maintaining original copies of all files and data transferred. We bear no responsibility for lost, expired, or deleted files.</li>
+          </ul>
+
+          <h2>3. Service Tiers &amp; Transfer Limits</h2>
+          <p>The Service is offered with the following operational specifications:</p>
+          <ul>
+            <li><strong>Free Service:</strong> Transfers of text and files up to <strong>1.5 gigabytes (GB)</strong> per file are completely free of charge with no account, subscription, or app installation required.</li>
+            <li>We reserve the right to modify transfer size limits or session timeouts at any time to maintain service reliability and network integrity.</li>
+          </ul>
+
+          <h2>4. Free Service &amp; No Fees</h2>
+          <p>
+            Handoff is provided 100% free of charge. No recurring subscriptions, usage fees, or micro-transactions apply. All supported file and text transfer capabilities are available to all users without payment or account registration.
+          </p>
+
+          <h2>5. Acceptable Use Policy</h2>
+          <p>You agree to use the Service only for lawful personal or business transfer purposes. You agree <strong>not</strong> to upload, relay, transmit, or share any content that:</p>
+          <ul>
+            <li>Is illegal, fraudulent, harmful, threatening, abusive, defamatory, or hateful.</li>
+            <li>Depicts, encourages, or facilitates child sexual abuse material (CSAM) or any form of child exploitation.</li>
+            <li>Infringes on the intellectual property, copyright, patent, trademark, or privacy rights of any third party.</li>
+            <li>Contains computer viruses, worms, trojan horses, ransomware, spyware, corrupted files, or any malicious code intended to compromise hardware, software, or network systems.</li>
+            <li>Attempts to reverse engineer, decompile, crawl, scrape, exploit, overload, or launch denial-of-service (DoS) attacks against our servers, APIs, or cloud infrastructure.</li>
+            <li>Attempts to bypass or circumvent room access identifiers, cryptographic namespaces, or storage access controls.</li>
+          </ul>
+          <p>
+            The provision of client-side encryption does not waive or diminish your obligations under this Acceptable Use Policy. You remain solely responsible for ensuring that all files, text, and data transferred through the Service comply with applicable laws and these Terms. We reserve the right to immediately terminate any active room, delete associated files, and restrict IP addresses found violating this Acceptable Use Policy without prior notice or liability.
+          </p>
+          <p>
+            To report content that violates this policy, email <a href="mailto:contact@handoffdrop.app">contact@handoffdrop.app</a> with the link and a short description. Because files expire after 15 minutes, content reported after that has already been deleted.
+          </p>
+
+          <h2>6. Intellectual Property &amp; Content Ownership</h2>
+          <p>
+            <strong>Your Content:</strong> You retain full, exclusive ownership and all intellectual property rights in and to any files, photos, audio, documents, and text transferred through the Service. Handoff claims no ownership, copyright, or title over your content.
+          </p>
+          <p>
+            <strong>Technical License:</strong> Solely for the limited purpose of transmitting your files from your sending device to your receiving device, you grant Handoff and its infrastructure providers a non-exclusive, worldwide, royalty-free, temporary license to receive, chunk, buffer, and deliver your content. This license automatically expires and terminates immediately upon file deletion.
+          </p>
+          <p>
+            <strong>Our Proprietary Rights:</strong> The Handoff software, branding, logos, visual interfaces, website design, code, and algorithms are protected by copyright, trademark, and other applicable laws. You may not copy, reproduce, modify, or distribute any portion of the Service interface or code without our prior written consent.
+          </p>
+
+          <h2>7. Disclaimer of Warranties ("AS IS")</h2>
+          <div class="legal-callout legal-callout-muted">
+            <p>
+              THE SERVICE IS PROVIDED ON AN <strong>"AS IS"</strong> AND <strong>"AS AVAILABLE"</strong> BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, NON-INFRINGEMENT, OR FREEDOM FROM COMPUTER VIRUSES.
+            </p>
+            <p>
+              WE DO NOT WARRANT THAT (A) THE SERVICE WILL FUNCTION UNINTERRUPTED, SECURE, OR ERROR-FREE; (B) ANY PARTICULAR FILE TRANSFER WILL COMPLETE WITHOUT DROPOUTS OR RESUMPTION DELAYS; OR (C) DEFECTS WILL BE DETECTED OR CORRECTED IMMEDIATELY.
+            </p>
+          </div>
+
+          <h2>8. Limitation of Liability</h2>
+          <p>
+            TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL HANDOFF, ITS FOUNDERS, EMPLOYEES, CONTRACTORS, OR SERVICE PROVIDERS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM:
+          </p>
+          <ul>
+            <li>YOUR ACCESS TO OR USE OF (OR INABILITY TO ACCESS OR USE) THE SERVICE;</li>
+            <li>ANY DELETION, CORRUPTION, OR EXPIRATION OF FILES OR TEXT TRANSFERRED VIA THE SERVICE;</li>
+            <li>ANY UNAUTHORIZED ACCESS, ALTERATION, OR INTERCEPTION OF DATA RESULTING FROM COMPROMISED QR CODES OR SHARED ROOM IDENTIFIERS;</li>
+            <li>ANY CONDUCT OR CONTENT OF ANY THIRD PARTY USING THE SERVICE.</li>
+          </ul>
+          <p>
+            IN NO EVENT SHALL OUR TOTAL AGGREGATE LIABILITY ARISING OUT OF OR RELATING TO THESE TERMS OR THE SERVICE EXCEED $10.00 USD.
+          </p>
+
+          <h2>9. Termination &amp; File Expiration</h2>
+          <p>
+            Each uploaded file automatically expires 15 minutes after upload and is permanently removed by our scheduled cleanup. Transfer sessions remain active until ended by the user clicking "End handoff" or closing the browser session. We reserve the right to suspend or discontinue the Service (or any feature thereof) at any time without notice. We may terminate or restrict access to any user engaging in abusive or fraudulent behavior.
+          </p>
+
+          <h2>10. Modifications to Terms</h2>
+          <p>
+            We may revise and update these Terms periodically to reflect changes in our service capabilities, legal requirements, or security standards. Any revisions will take effect immediately upon posting to this page, with the updated "Effective Date" reflected at the top. Your continued use of the Service following any modifications constitutes your acceptance of the revised Terms.
+          </p>
+
+          <h2>11. Governing Law &amp; Dispute Resolution</h2>
+          <p>
+            These Terms shall be governed by and construed in accordance with the laws of the applicable operating jurisdiction, without regard to its conflict of law principles. Any dispute, claim, or controversy arising out of or relating to these Terms shall be resolved through good-faith negotiation, or submitted to binding arbitration or competent courts in accordance with governing law.
+          </p>
+
+          <h2>12. Contact Information</h2>
+          <p>
+            If you have questions, concerns, or inquiries regarding these Terms and Conditions, please contact us:
+          </p>
+          <ul>
+            <li><strong>Online:</strong> <a href="/">handoffdrop.app</a></li>
+            <li><strong>Email:</strong> <a href="mailto:contact@handoffdrop.app">contact@handoffdrop.app</a></li>
+          </ul>
+        </div>
+      </article>
+
+      <footer class="site-footer">
+        <div class="site-footer-links">
+          <a href="/">Home</a>
+          <span class="sep">·</span>
+          <a href="/privacy.html">Privacy Policy</a>
+          <span class="sep">·</span>
+          <a href="/terms.html">Terms &amp; Conditions</a>
+          <span class="sep">·</span>
+          <a href="/accessibility.html">Accessibility</a>
+        </div>
+        <p class="site-footer-copy">&copy; 2026 Handoff. Ephemeral, private device sharing.</p>
+      </footer>
+    </div>
+  </body>
+</html>

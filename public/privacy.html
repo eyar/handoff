@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101828" />
+    <title>Privacy Policy — Handoff</title>
+    <meta name="description" content="Privacy Policy for Handoff. Ephemeral, zero-account, private temporary device sharing." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="legal-shell">
+      <nav class="legal-nav-bar" aria-label="Main Navigation">
+        <a href="/" class="nav-back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Back to Handoff</span>
+        </a>
+      </nav>
+
+      <article class="legal-card">
+        <header class="legal-header">
+          <p class="kicker">Private by design</p>
+          <h1>Privacy Policy</h1>
+          <div class="legal-meta">
+            <span class="pill">Privacy-by-Design</span>
+            <span>Last updated: October 19, 2026</span>
+          </div>
+        </header>
+
+        <div class="legal-content">
+          <div class="legal-callout">
+            <strong>Our Privacy Promise:</strong> Handoff is built with privacy-by-design. We do not require accounts, we do not build user profiles, we do not run third-party advertising trackers, and your transferred files and text messages are automatically destroyed after your session. Text and files sent from the Handoff app are protected by zero-knowledge client-side end-to-end encryption (E2EE), with the few exceptions listed below.
+          </div>
+
+          <h2>1. Introduction</h2>
+          <p>
+            This Privacy Policy describes how Handoff ("we", "us", or "our") handles information when you use our website, tools, and temporary device-to-device relay service (collectively, the "Service").
+          </p>
+          <p>
+            Unlike traditional cloud storage or messaging platforms that store your files and communication history indefinitely, Handoff is an <strong>ephemeral relay</strong>: our systems are engineered to hold your data only for the brief moment required to move it between your paired devices.
+          </p>
+
+          <h2>2. Information We Process &amp; How It Is Handled</h2>
+
+          <h3>A. Transferred Files</h3>
+          <p>
+            When you select and upload files to send between your paired devices:
+          </p>
+          <ul>
+            <li><strong>Client-Side Zero-Knowledge Encryption:</strong> Files sent from the Handoff app are automatically encrypted directly in your browser using 256-bit AES-GCM (Web Cryptography API) before being uploaded. Large files are encrypted in 8 MB chunks, so files of any size are protected. The temporary file stored in cloud storage is raw ciphertext. Neither Handoff, Cloudflare, nor any intermediary holds the decryption key or possesses the ability to decrypt your files.</li>
+            <li><strong>Transfers Without Client-Side Encryption:</strong> The following are sent to temporary cloud storage via secure presigned URLs over encrypted HTTPS / TLS 1.3 channels, but are not end-to-end encrypted: text and files sent with the iPhone Shortcut (Apple Shortcuts cannot access your browser's encryption key), and files over 200 MB sent before the receiving device has connected, to a device whose browser cannot decrypt large files on the device (such as iPhones on older iOS versions), or to a device running an outdated version of Handoff. Like all files, they are deleted within 15 minutes. On the receiving device, end-to-end encrypted files are marked with a 🔒 E2EE tag.</li>
+            <li>Files are kept temporarily and solely to enable your receiving device to download them.</li>
+            <li>We do not inspect, index, analyze, sell, or share the contents of your files.</li>
+            <li><strong>Automated Destruction:</strong> All uploaded files are permanently deleted immediately upon download or sharing by the recipient, or when either device ends the session. Otherwise they expire <strong>15 minutes</strong> after upload, with scheduled automated cleanup removing expired files.</li>
+          </ul>
+
+          <h3>B. Transferred Text</h3>
+          <p>
+            When you send text snippets between your paired devices:
+          </p>
+          <ul>
+            <li><strong>End-to-End Encrypted:</strong> Text snippets sent from the Handoff app are encrypted client-side using zero-knowledge 256-bit AES-GCM prior to transmission. Text sent with the iPhone Shortcut is relayed over HTTPS without client-side encryption.</li>
+            <li>Text is relayed transiently in real time over encrypted WebSockets (Supabase Realtime). Intermediate relays only process encrypted ciphertext payloads.</li>
+            <li>Text messages exist only in client memory during active transmission, automatically clear when copied, shared, or after 1 minute of inactivity, and are <strong>never</strong> written to disk, logged, or stored in any persistent database.</li>
+          </ul>
+
+          <h3>C. No User Accounts or Personal Profiles</h3>
+          <p>
+            You can use Handoff completely anonymously. We do not ask for, collect, or store your name, email address, phone number, username, or password. Rooms are identified only by randomly generated, short-lived room tokens.
+          </p>
+
+          <h3>D. No Payment Information Collected</h3>
+          <p>
+            Handoff is 100% free to use. We do not require payment, subscriptions, credit cards, or billing accounts, and we do not collect, process, or store financial details.
+          </p>
+
+          <h3>E. Technical Logs &amp; Operational Data</h3>
+          <p>
+            Like all web services, our servers and infrastructure providers automatically log standard technical HTTP request data (such as IP address, browser User-Agent, request timestamp, and HTTP response codes). IP addresses can be considered personal data under laws such as the GDPR, so we treat these logs accordingly: we do not use them to identify, profile, or track visitors. They are processed strictly for security, rate-limiting, DDoS prevention, debugging network errors, and maintaining operational uptime, based on our legitimate interest in keeping the Service secure and available, and are rotated and deleted on standard short retention schedules.
+          </p>
+          <p>
+            We also use Cloudflare Analytics to understand aggregate traffic and performance. Depending on the metric, this can include page views, page path and referring source, device and browser type, approximate country, and page-load performance. We use these aggregate measurements only to improve reliability and performance; we do not use them for advertising or to build individual user profiles. Cloudflare states that Web Analytics does not use cookies and that its beacon discards the visitor's IP address at the nearest data center instead of storing it in analytics records.
+          </p>
+
+          <h2>3. Cookies &amp; Local Storage</h2>
+          <p>
+            We believe in a tracker-free web:
+          </p>
+          <ul>
+            <li><strong>No Tracking Cookies:</strong> We do not use third-party tracking cookies, advertising pixels (such as Meta Pixel or Google Ads tags), or cross-site user fingerprinting.</li>
+            <li><strong>Functional Session Storage:</strong> We use your browser's native <code>sessionStorage</code> and URL hash fragments solely for essential functionality—specifically, to maintain your active room identifier and ephemeral encryption key in client memory. This data is strictly temporary and is cleared when you end the session or close the tab.</li>
+          </ul>
+
+          <h2>4. Third-Party Infrastructure &amp; Subprocessors</h2>
+          <p>
+            We rely on trusted cloud infrastructure providers to securely run the Service. Each subprocessor is bound by data processing terms and industry-standard security certifications:
+          </p>
+
+          <div class="legal-table-wrap">
+            <table class="legal-table">
+              <thead>
+                <tr>
+                  <th>Subprocessor</th>
+                  <th>Purpose</th>
+                  <th>Data Handled</th>
+                  <th>Location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Supabase Inc.</strong></td>
+                  <td>Cloud database and encrypted realtime WebSocket signaling.</td>
+                  <td>Ciphertext transient text streams and room signaling.</td>
+                  <td>United States (AWS)</td>
+                </tr>
+                <tr>
+                  <td><strong>Cloudflare Inc.</strong></td>
+                  <td>Cloudflare R2 temporary object storage, static web application delivery, DNS, DDoS protection, and website analytics (Cloudflare Web Analytics).</td>
+                  <td>Temporary uploaded files (end-to-end encrypted ciphertext, except for the transfers listed in Section 2; expire after 15 minutes, or immediately upon download/session end), standard network transit logs, aggregate page-view and performance metrics.</td>
+                  <td>Global Edge Network / United States</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>5. Data Retention &amp; Automatic Purge Schedule</h2>
+          <p>
+            Our retention model is strictly ephemeral:
+          </p>
+          <ul>
+            <li><strong>Transferred Files:</strong> Each uploaded file automatically deletes immediately upon download or sharing by the recipient, or expires <strong>15 minutes</strong> after upload. If the user clicks "End handoff", all session files are deleted immediately. Scheduled automated cleanup permanently removes expired files from temporary storage.</li>
+            <li><strong>Transferred Text:</strong> <strong>0 seconds</strong>. Relayed in-memory only and never persisted to storage. Automatically purged from screen when copied, shared, or after 1 minute of inactivity.</li>
+            <li><strong>Room Session:</strong> Active during your transfer session and terminated immediately upon clicking "End handoff" or closing the browser tab.</li>
+            <li><strong>Anonymous Technical Diagnostics:</strong> To proactively resolve technical failures (e.g. WebSocket interruptions or upload failures), anonymous technical error logs (error event type and browser user-agent, free of any file content or personal identity) are automatically purged after <strong>48 hours</strong> by our scheduled cleanup task.</li>
+          </ul>
+
+          <h2>6. Data Security Measures</h2>
+          <p>
+            We employ robust, modern technical safeguards to protect data while it passes through our Service:
+          </p>
+          <ul>
+            <li><strong>Client-Side Zero-Knowledge End-to-End Encryption (E2EE):</strong> Text and files sent from the Handoff app (except as described above) are encrypted and decrypted locally in your browser using 256-bit AES-GCM via the W3C Web Cryptography API. Ephemeral encryption keys are generated on your device and shared exclusively with your paired device through the QR code and URL hash fragment (<code>#key=...</code>). The encryption key is never transmitted to, processed by, or stored on our servers.</li>
+            <li><strong>Transport Layer Security (TLS 1.3 / WSS):</strong> All data in transit, including transfers without client-side encryption, is encrypted using Transport Layer Security (HTTPS / TLS 1.3) and Secure WebSockets (WSS).</li>
+            <li><strong>Namespace Isolation &amp; Cryptographic Unguessability:</strong> Uploaded files are partitioned into cryptographically generated 10-character room namespaces with high-entropy randomized object paths (yielding over 3.65 quadrillion room combinations), preventing unauthenticated enumeration or directory traversal.</li>
+            <li><strong>Automated Physical Deletion:</strong> Deletions execute directly via Cloudflare R2 storage API, ensuring physical removal from cloud storage buckets and prevention of orphaned data.</li>
+            <li><strong>No Persistent PII:</strong> Because we do not store personal profiles, databases cannot be breached for user passwords, emails, or personal identification records.</li>
+          </ul>
+
+          <h2>7. Your Privacy Rights (GDPR, UK GDPR &amp; CCPA)</h2>
+          <p>
+            Under privacy frameworks including the General Data Protection Regulation (GDPR), UK GDPR, and California Consumer Privacy Act (CCPA/CPRA), individuals have specific rights regarding their personal information:
+          </p>
+          <ul>
+            <li><strong>Right to Erasure ("Right to be Forgotten"):</strong> Because all files are automatically destroyed within 15 minutes (or immediately when you click "End handoff") and text is never written to disk, your transferred data is erased by default without requiring a manual deletion request.</li>
+            <li><strong>Right of Access &amp; Portability:</strong> We do not maintain accounts, identities, or profiles linking individuals to files. Therefore, we do not hold identifiable personal data that can be retrieved after a room has expired.</li>
+            <li><strong>Sale of Personal Information:</strong> We do <strong>not</strong> sell, rent, monetize, or disclose your personal information or content to data brokers or third parties for marketing or advertising purposes.</li>
+          </ul>
+
+          <h2>8. Children's Privacy</h2>
+          <p>
+            The Service is not directed to children under the age of 13 (or 16 in the European Economic Area). We do not knowingly collect personal information from children. If you believe a child has provided personal information through our Service, please contact us so we can immediately purge the relevant data.
+          </p>
+
+          <h2>9. Changes to this Privacy Policy</h2>
+          <p>
+            We may update this Privacy Policy from time to time to reflect operational, technological, or legal developments. When changes occur, we will update the "Last updated" date at the top of this page. We encourage you to review this policy periodically.
+          </p>
+
+          <h2>10. Contact Us</h2>
+          <p>
+            If you have questions, concerns, or requests regarding this Privacy Policy or our data protection practices, please contact us:
+          </p>
+          <ul>
+            <li><strong>Website:</strong> <a href="/">handoffdrop.app</a></li>
+            <li><strong>Email:</strong> <a href="mailto:contact@handoffdrop.app">contact@handoffdrop.app</a></li>
+          </ul>
+        </div>
+      </article>
+
+      <footer class="site-footer">
+        <div class="site-footer-links">
+          <a href="/">Home</a>
+          <span class="sep">·</span>
+          <a href="/privacy.html">Privacy Policy</a>
+          <span class="sep">·</span>
+          <a href="/terms.html">Terms &amp; Conditions</a>
+          <span class="sep">·</span>
+          <a href="/accessibility.html">Accessibility</a>
+        </div>
+        <p class="site-footer-copy">&copy; 2026 Handoff. Ephemeral, private device sharing.</p>
+      </footer>
+    </div>
+  </body>
+</html>

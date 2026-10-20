@@ -1,0 +1,35 @@
+:root {
+  color-scheme: dark;
+  --bg: #101828;
+  --toast-bg: #f8fafc;
+  --toast-fg: #101828;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+#app {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+#toast {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--toast-bg);
+  color: var(--toast-fg);
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}

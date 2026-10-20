@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101828" />
+    <title>iOS Share Sheet Shortcut — Handoff</title>
+    <meta name="description" content="Add Handoff to your iOS Share Sheet to transfer photos, documents, and links to your PC in one tap." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .download-hero {
+        margin: 24px 0 32px 0;
+        padding: 32px 24px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #ffffff;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2);
+      }
+      .download-icon {
+        font-size: 2.2rem;
+        margin-bottom: 12px;
+      }
+      .download-title {
+        margin: 0 0 8px 0;
+        color: #ffffff;
+        font-size: 1.45rem;
+        font-weight: 700;
+      }
+      .download-desc {
+        margin: 0 auto 20px auto;
+        max-width: 440px;
+        color: #94a3b8;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+      .install-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.05rem;
+        padding: 14px 28px;
+        background: #15803d;
+        border: 1px solid #16a34a;
+        color: #ffffff !important;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: 0 4px 14px rgba(21, 128, 61, 0.4);
+        transition: transform 0.15s ease, background 0.15s ease;
+      }
+      .install-btn:hover {
+        background: #16a34a;
+        transform: translateY(-1px);
+      }
+      .how-it-works-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: 24px;
+      }
+      .step-card {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        padding: 16px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+      }
+      .step-num {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        background: #15803d;
+        color: #ffffff;
+        font-weight: 700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+      }
+      .step-body {
+        flex: 1;
+      }
+      .step-title {
+        font-weight: 600;
+        font-size: 1.05rem;
+        margin: 0 0 4px 0;
+        color: #0f172a;
+      }
+      .step-desc {
+        margin: 0;
+        color: #475569;
+        font-size: 0.92rem;
+        line-height: 1.5;
+      }
+
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <a class="brand" href="/">handoff<span>·</span></a>
+        <a href="/" class="secondary" style="font-size: 0.9rem; text-decoration: none; padding: 6px 12px;">← Back to App</a>
+      </header>
+
+      <section class="card">
+        <p class="kicker">Official Apple iOS Shortcut</p>
+        <h1>Share to PC from Photos, Safari &amp; Files</h1>
+        <p class="lede">
+          Add <strong>Handoff to PC</strong> directly into your iPhone's native Share Sheet. One tap to install, zero manual configuration.
+        </p>
+
+        <!-- 1-Tap Download Hero -->
+        <div class="download-hero">
+          <div class="download-icon">📲</div>
+          <h2 class="download-title">Install "Handoff to PC" in 1 Tap</h2>
+          <p class="download-desc">
+            Tap below to add our official Apple Shortcut directly to your iPhone or iPad. It automatically integrates into your iOS Share Sheet.
+          </p>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <a href="https://www.icloud.com/shortcuts/607e4ca0231845e4b94470eaf7f061c0" class="install-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Add Shortcut to iPhone</span>
+            </a>
+          </div>
+          <div style="margin-top: 14px; font-size: 0.85rem;">
+            <a href="/shortcut/handoff-to-pc.shortcut" download="Handoff to PC.shortcut" style="color: #94a3b8; text-decoration: underline;">Download .shortcut file directly</a>
+          </div>
+        </div>
+
+        <h3 style="margin: 0 0 12px 0; font-size: 1.15rem; color: #0f172a;">How It Works</h3>
+        <div class="how-it-works-grid">
+          <!-- Step 1 -->
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4 class="step-title">Tap "Add Shortcut"</h4>
+              <p class="step-desc">
+                When you tap the button above, iOS opens the Shortcuts app and prompts you with <strong>Add Shortcut</strong>.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4 class="step-title">Share Photos, Files, or Links</h4>
+              <p class="step-desc">
+                In Photos, Safari, or Files, tap the native <strong>Share</strong> button and choose <strong>Handoff to PC</strong>.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4 class="step-title">Zero Hassle Auto-Transfer</h4>
+              <p class="step-desc">
+                If your iPhone was already paired with your PC, the file lands on your computer screen instantly. If not paired yet, Handoff opens with the QR code ready to scan!
+              </p>
+              <p class="step-desc">
+                Shortcut transfers are protected in transit (HTTPS) and deleted within 15 minutes, but they aren't end-to-end encrypted, since Shortcuts can't use Handoff's encryption key. For sensitive files, send them from the Handoff app instead.
+              </p>
+            </div>
+          </div>
+        </div>
+
+
+      </section>
+
+      <footer class="site-footer">
+        <p class="site-footer-copy">&copy; 2026 Handoff. Ephemeral, private device sharing.</p>
+      </footer>
+    </main>
+
+
+  </body>
+</html>

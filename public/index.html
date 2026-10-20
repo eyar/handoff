@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101828" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Handoff" />
+    <title>Handoff: Send Files from Your Phone to Any Computer</title>
+    <meta name="description" content="Send photos, files and text from your iPhone or Android to any computer. Scan a QR code. No app, no account. Free for files up to 1.5 GB." />
+    <link rel="canonical" href="https://handoffdrop.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://handoffdrop.app/" />
+    <meta property="og:title" content="Handoff: Send Files from Your Phone to Any Computer" />
+    <meta property="og:description" content="Send photos, files and text from your iPhone or Android to any computer. Scan a QR code. No app, no account. Free for files up to 1.5 GB." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="/styles.css?v=20260928_25" />
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <a class="brand" href="/">handoff<span>·</span></a>
+        <p class="eyebrow">Temporary device sharing</p>
+      </header>
+
+      <section id="home" class="card center">
+        <p class="kicker">iPhone → PC, in seconds</p>
+        <h1>Send text &amp; files without sending them to yourself.</h1>
+        <p class="lede">Create a private handoff. Scan the code with your phone to instantly transfer text, photos, and files up to 1.5 GB.</p>
+        <button id="create-room" class="primary">Start a handoff</button>
+        <p class="fine-print">By starting a handoff, you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>.<br />Files and text auto-delete automatically. Do not use for sensitive information.</p>
+      </section>
+
+      <section id="computer" class="card computer hidden">
+        <div class="topline"><p id="computer-kicker" class="kicker">Ready to pair</p><div class="topline-pills"><span id="computer-e2ee-badge" class="pill e2ee-badge hidden" title="End-to-End Encrypted (Zero-Knowledge AES-256-GCM for text and files sent from the app)">🔒 E2EE</span><span id="timer" class="pill"></span></div></div>
+        <h1 id="computer-title">Scan this with your phone.</h1>
+        <div id="qr" class="qr" aria-label="Pairing QR code"></div>
+        <p id="peer-status" class="status">Waiting for your phone…</p>
+        <div class="ios-shortcut-hint">
+          <a href="/shortcut/" target="_blank" rel="noopener" class="shortcut-tip-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" aria-hidden="true">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+            <span>iPhone user? Add to iOS Share Sheet</span>
+          </a>
+        </div>
+
+        <div id="computer-divider" class="divider"><span>or share from this computer</span></div>
+
+        <!-- Desktop File Transfer -->
+        <div class="transfer-box">
+          <p class="label">Send files</p>
+          <div id="desktop-dropzone" class="dropzone" role="button" tabindex="0" aria-label="Drop files here, click to browse, or paste">
+            <input type="file" id="desktop-file-input" class="hidden-file-input" multiple />
+            <div class="dropzone-prompt">
+              <svg class="icon-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <p class="dropzone-text"><strong>Choose files</strong>, drag &amp; drop, or paste</p>
+              <p class="dropzone-hint">Photos, documents, screenshots (Cmd/Ctrl + V to paste)</p>
+            </div>
+          </div>
+          <div class="dropzone-actions">
+            <button type="button" id="desktop-paste-file" class="secondary full-width paste-btn">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+              <span>Paste photo or file</span>
+            </button>
+          </div>
+          <div id="dropzone-context-menu" class="dropzone-context-menu hidden">
+            <button type="button" id="dropzone-paste-btn" class="context-menu-btn">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+              <span>Paste from clipboard</span>
+            </button>
+          </div>
+          <div id="desktop-file-preview-list" class="file-preview-list hidden"></div>
+          <div id="desktop-file-progress-container" class="progress-wrap hidden">
+            <div class="progress-bar-bg">
+              <div id="desktop-file-progress-bar" class="progress-bar-fill"></div>
+            </div>
+            <div class="progress-meta">
+              <span id="desktop-file-progress-text" class="progress-text">Uploading…</span>
+              <button type="button" id="desktop-file-cancel" class="progress-cancel-btn">Cancel</button>
+            </div>
+          </div>
+          <button id="desktop-file-send" class="primary full-width hidden">Send files to phone</button>
+          <p id="desktop-file-status" class="status-msg" aria-live="polite"></p>
+        </div>
+
+        <!-- Received Files section -->
+        <section id="received-files-section" class="received-box hidden" aria-live="polite">
+          <div class="received-header">
+            <div class="received-header-title">
+              <p id="desktop-received-files-label" class="label">Files from your phone</p>
+              <span id="received-files-count" class="pill">0</span>
+            </div>
+            <div class="received-toolbar">
+              <label class="select-all-btn">
+                <input type="checkbox" id="desktop-select-all" class="file-checkbox" />
+                <span>Select all</span>
+              </label>
+              <button type="button" id="desktop-download-selected" class="download-selected-btn" disabled>
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span class="download-selected-text">Download selected</span>
+              </button>
+              <button type="button" id="desktop-share-selected" class="share-selected-btn" disabled>
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                  <polyline points="16 6 12 2 8 6"></polyline>
+                  <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+                <span class="share-selected-text">Share selected</span>
+              </button>
+              <button type="button" id="desktop-delete-selected" class="delete-selected-btn" disabled>
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                <span class="delete-selected-text">Remove selected</span>
+              </button>
+            </div>
+          </div>
+          <div id="received-files-list" class="files-list"></div>
+        </section>
+
+        <!-- Desktop Unified Synced Text -->
+        <div class="transfer-box">
+          <div class="transfer-box-header">
+            <label class="label" for="desktop-text">Shared text</label>
+            <div class="header-badges">
+              <span id="desktop-text-expiry" class="text-expiry-badge hidden" title="Text automatically clears after copying, sharing, or 1 minute">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="text-expiry-time">1:00</span>
+              </span>
+              <span class="pill live-pill">Syncs live</span>
+            </div>
+          </div>
+          <div class="text-input-wrap">
+            <textarea id="desktop-text" maxlength="10000" placeholder="Type or paste text — syncs live, clears when copied or shared"></textarea>
+            <div id="desktop-text-display" class="text-display hidden" role="textbox" aria-label="Shared text with clickable link"></div>
+          </div>
+          <div class="text-actions">
+            <button id="desktop-paste-text" class="secondary paste-btn" type="button">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+              <span>Paste</span>
+            </button>
+            <button id="copy" class="secondary" type="button">Copy to clipboard</button>
+            <button id="share" class="secondary" type="button">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+          <p id="desktop-text-status" class="status-msg" aria-live="polite"></p>
+        </div>
+
+        <button id="end-room" class="link-button">End this handoff</button>
+      </section>
+
+      <section id="phone" class="card phone hidden">
+        <div class="topline"><p class="kicker">You’re connected</p><div class="topline-pills"><span id="phone-e2ee-badge" class="pill e2ee-badge hidden" title="End-to-End Encrypted (Zero-Knowledge AES-256-GCM for text and files sent from the app)">🔒 E2EE</span><span id="phone-timer" class="pill"></span></div></div>
+        <h1 id="phone-title">Send it to your computer.</h1>
+        <p id="phone-peer-status" class="status-msg" aria-live="polite"></p>
+
+        <!-- Staged File Connect Card (shown when a file was shared via iOS Shortcut before pairing) -->
+        <div id="phone-staged-connect-card" class="staged-connect-card hidden">
+          <div class="staged-card-header">
+            <span id="staged-card-badge" class="staged-card-badge">Ready to send</span>
+            <p id="staged-card-filename" class="staged-card-name">Shared file</p>
+            <span id="staged-card-filesize" class="staged-card-size"></span>
+          </div>
+          <p class="staged-card-note">Shared via Shortcut · not end-to-end encrypted</p>
+
+          <div class="staged-card-body">
+            <p id="staged-card-prompt" class="staged-card-prompt"><strong>Pair with your computer:</strong> Scan the QR code on your computer screen to send this file instantly.</p>
+
+            <div id="staged-connect-details">
+              <button type="button" id="staged-scan-camera-btn" class="primary staged-scan-btn full-width">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+                <span>Scan Computer QR Code</span>
+              </button>
+
+              <div class="staged-or-divider"><span>or scan with another device</span></div>
+
+              <div class="staged-qr-box">
+                <div id="staged-phone-qr" class="staged-phone-qr"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone Received Files section -->
+        <section id="phone-received-files-section" class="received-box hidden" aria-live="polite">
+          <div class="received-header">
+            <div class="received-header-title">
+              <p class="label">Files from your computer</p>
+              <span id="phone-received-files-count" class="pill">0</span>
+            </div>
+            <div class="received-toolbar phone-bulk-bar">
+              <label class="select-all-btn">
+                <input type="checkbox" id="phone-select-all" class="file-checkbox" />
+                <span class="select-all-text">Select all</span>
+              </label>
+              <div class="bulk-actions">
+                <button type="button" id="phone-delete-selected" class="delete-selected-btn bulk-icon-btn" aria-label="Remove selected" title="Remove selected" disabled>
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                </button>
+                <button type="button" id="phone-share-selected" class="share-selected-btn bulk-icon-btn" aria-label="Share selected" title="Share selected" disabled>
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                    <polyline points="16 6 12 2 8 6"></polyline>
+                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                  </svg>
+                </button>
+                <button type="button" id="phone-download-selected" class="download-selected-btn bulk-primary-btn" aria-label="Download selected" title="Download selected" disabled>
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span class="download-selected-text">Download</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div id="phone-received-files-list" class="files-list"></div>
+        </section>
+
+        <!-- Phone File Transfer -->
+        <div class="transfer-box">
+          <p class="label">Send photos or files</p>
+          <div id="phone-dropzone" class="dropzone" role="button" tabindex="0" aria-label="Select photos or files to send">
+            <input type="file" id="phone-file-input" class="hidden-file-input" multiple />
+            <div class="dropzone-prompt">
+              <svg class="icon-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <p class="dropzone-text"><strong>Tap to choose photos or files</strong></p>
+              <p class="dropzone-hint">Any photos, videos, PDFs, or documents</p>
+            </div>
+          </div>
+          <div class="dropzone-actions">
+            <button type="button" id="phone-paste-file" class="secondary full-width paste-btn">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+              <span>Paste photo or file</span>
+            </button>
+          </div>
+          <div id="phone-file-preview-list" class="file-preview-list hidden"></div>
+          <div id="phone-file-progress-container" class="progress-wrap hidden">
+            <div class="progress-bar-bg">
+              <div id="phone-file-progress-bar" class="progress-bar-fill"></div>
+            </div>
+            <div class="progress-meta">
+              <span id="phone-file-progress-text" class="progress-text">Uploading…</span>
+              <button type="button" id="phone-file-cancel" class="progress-cancel-btn">Cancel</button>
+            </div>
+          </div>
+          <button id="phone-file-send" class="primary full-width hidden">Send files to computer</button>
+          <p id="phone-file-status" class="status-msg" aria-live="polite"></p>
+        </div>
+
+        <div class="divider"><span>or send text</span></div>
+
+        <!-- Phone Unified Synced Text -->
+        <div class="transfer-box">
+          <div class="transfer-box-header">
+            <label class="label" for="phone-text">Shared text</label>
+            <div class="header-badges">
+              <span id="phone-text-expiry" class="text-expiry-badge hidden" title="Text automatically clears after copying, sharing, or 1 minute">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="text-expiry-time">1:00</span>
+              </span>
+              <span class="pill live-pill">Syncs live</span>
+            </div>
+          </div>
+          <div class="text-input-wrap">
+            <textarea id="phone-text" maxlength="10000" autofocus placeholder="Type or paste text — syncs live, clears when copied or shared"></textarea>
+            <div id="phone-text-display" class="text-display hidden" role="textbox" aria-label="Shared text with clickable link"></div>
+          </div>
+          <div class="text-actions">
+            <button id="phone-paste-text" class="secondary paste-btn" type="button">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+              <span>Paste</span>
+            </button>
+            <button id="phone-copy" class="secondary" type="button">Copy to clipboard</button>
+            <button id="phone-share" class="secondary" type="button">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+          <p id="phone-result" class="status-msg" aria-live="polite"></p>
+        </div>
+
+        <!-- Computer-to-Computer Bridge Option -->
+        <div id="bridge-prompt-card" class="bridge-card hidden">
+          <div class="bridge-card-info">
+            <svg class="bridge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            <div>
+              <p class="bridge-title">Connect 2nd Computer</p>
+              <p class="bridge-desc">Scan another computer’s screen to pair both computers directly.</p>
+            </div>
+          </div>
+          <button type="button" id="start-bridge-scanner-btn" class="bridge-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <span>Scan Computer 2</span>
+          </button>
+        </div>
+
+        <button id="phone-end" class="link-button">End handoff</button>
+        <p class="phone-legal-note">By using this session, you agree to our <a href="/terms.html" target="_blank" rel="noopener">Terms</a> and <a href="/privacy.html" target="_blank" rel="noopener">Privacy</a>.</p>
+      </section>
+
+      <footer class="site-footer">
+        <div class="site-footer-links">
+          <a href="/shortcut/" target="_blank" rel="noopener">iOS Shortcut</a>
+          <span class="sep">·</span>
+          <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
+          <span class="sep">·</span>
+          <a href="/terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a>
+          <span class="sep">·</span>
+          <a href="/accessibility.html" target="_blank" rel="noopener">Accessibility</a>
+          <span class="sep">·</span>
+          <button type="button" id="copy-diagnostics-btn" class="footer-btn-link" title="Copy troubleshooting diagnostic report">Diagnostics</button>
+        </div>
+        <nav class="site-footer-links" aria-label="Guides">
+          <a href="/iphone-to-pc" target="_blank" rel="noopener">iPhone to PC</a>
+          <span class="sep">·</span>
+          <a href="/airdrop-for-windows" target="_blank" rel="noopener">AirDrop for Windows</a>
+          <span class="sep">·</span>
+          <a href="/android-to-mac" target="_blank" rel="noopener">Android to Mac</a>
+          <span class="sep">·</span>
+          <a href="/iphone-to-android" target="_blank" rel="noopener">iPhone to Android</a>
+          <span class="sep">·</span>
+          <a href="/computer-to-computer" target="_blank" rel="noopener">Computer to computer</a>
+          <span class="sep">·</span>
+          <a href="/send-to-any-computer" target="_blank" rel="noopener">Any computer</a>
+        </nav>
+        <p class="site-footer-copy">&copy; 2026 Handoff. Ephemeral, private device sharing.</p>
+      </footer>
+    </main>
+
+    <!-- Camera QR Scanner Modal -->
+    <div id="qr-scanner-modal" class="modal-backdrop scanner-modal hidden" role="dialog" aria-modal="true" aria-labelledby="scanner-modal-title">
+      <div class="scanner-card">
+        <div class="scanner-header">
+          <div class="scanner-title-wrap">
+            <h2 id="scanner-modal-title" class="scanner-title">Scan Computer 2</h2>
+            <p id="scanner-status" class="scanner-status-text">Point camera at Computer 2’s screen…</p>
+          </div>
+          <div class="scanner-header-actions">
+            <button type="button" id="switch-camera-btn" class="scanner-action-btn hidden" aria-label="Switch camera" title="Switch camera">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+              </svg>
+            </button>
+            <button type="button" id="close-scanner-btn" class="scanner-close-btn" aria-label="Close camera scanner" title="Close camera scanner">✕</button>
+          </div>
+        </div>
+
+        <div class="scanner-viewport-wrap">
+          <video id="qr-scanner-video" class="scanner-video" playsinline muted autoplay></video>
+          <div class="scanner-reticle" aria-hidden="true">
+            <div class="reticle-corner tl"></div>
+            <div class="reticle-corner tr"></div>
+            <div class="reticle-corner bl"></div>
+            <div class="reticle-corner br"></div>
+            <div class="reticle-laser"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bridge Success Modal -->
+    <div id="bridge-success-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Computers Connected">
+      <div class="bridge-success-card">
+        <div class="success-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2 class="bridge-success-title">Computers Connected!</h2>
+        <p class="bridge-success-desc">
+          Both computers are now directly linked. Your phone is disconnecting so you can transfer files between your computers.
+        </p>
+        <button type="button" id="bridge-done-btn" class="primary full-width">Done</button>
+      </div>
+    </div>
+
+    <script type="module" src="/app.js?v=20260928_25"></script>
+  </body>
+</html>
