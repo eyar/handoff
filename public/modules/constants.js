@@ -12,7 +12,8 @@ export const MAX_PARALLEL_UPLOADS = 2; // Up to 2 concurrent file uploads
 // Browser extensions allowed to embed Handoff and hand it text/files (see modules/extensionBridge.js).
 // Add the Edge Add-ons ID too once it is published there.
 export const EXTENSION_ORIGINS = [
-  "chrome-extension://jmjapgakklfhafbgheccblmkhnmbmnkd", // Chrome Web Store: "Handoff — Send to Phone"
+  "chrome-extension://jmjapgakklfhafbgheccblmkhnmbmnkd", // Chrome Web Store
+  "chrome-extension://glgcblooikklbddfhfdelcimhpaieahp", // Microsoft Edge Add-ons: "Handoff — Send to Phone"
   "chrome-extension://fpebcbfmfdmfefgilaogdkojfpcbclkp" // unpacked dev build (fixed by "key" in extension/manifest.json)
 ];
 
