@@ -118,9 +118,9 @@ Deno.serve(async (req) => {
 
   // Action: Upload URL generation
   if (action === "upload") {
-    const rawFileName = String(body?.fileName || "unnamed-file").trim();
-    const safeFileName = rawFileName.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const fileId = String(body?.fileId || Date.now()).replace(/[^a-zA-Z0-9_-]/g, "");
+    // Only sent for unencrypted fallback uploads, which the receiver downloads
+    // directly and so need a filename in Content-Disposition.
+    const rawFileName = body?.fileName ? String(body.fileName).trim() : null;
     const mimeType = String(body?.mimeType || "application/octet-stream").trim();
     const fileSize = Number(body?.fileSize || 0);
 
@@ -128,7 +128,7 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "File exceeds 1.5 GB maximum transfer size" }, 400);
     }
 
-    const storagePath = `${roomId}/${fileId}-${safeFileName}`;
+    const storagePath = objectKeyFor(body?.fileId);
 
     try {
       // 1. Presigned PUT for direct upload
@@ -143,16 +143,7 @@ Deno.serve(async (req) => {
       });
 
       // 2. Presigned GET for direct download
-      const getCommand = new GetObjectCommand({
-        Bucket: bucket,
-        Key: storagePath,
-        ResponseContentDisposition: `attachment; filename="${encodeURIComponent(rawFileName)}"`,
-        ResponseContentType: mimeType,
-      });
-
-      const downloadUrl = await getSignedUrl(s3, getCommand, {
-        expiresIn: PRESIGNED_URL_TTL_SECONDS,
-      });
+      const downloadUrl = await downloadUrlFor(storagePath, rawFileName, mimeType);
 
       return jsonResponse({
         success: true,
@@ -167,20 +158,22 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Shared by "upload" and "multipart-create": room-scoped object key and a presigned GET for the receiver
-  function objectKeyFor(rawFileName: string, fileIdRaw: unknown) {
-    const safeFileName = rawFileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+  // Shared by "upload" and "multipart-create": room-scoped object key and a presigned GET for the receiver.
+  // The key never contains the file name, so bucket listings don't reveal what was sent.
+  function objectKeyFor(fileIdRaw: unknown) {
     const fileId = String(fileIdRaw || Date.now()).replace(/[^a-zA-Z0-9_-]/g, "");
-    return `${roomId}/${fileId}-${safeFileName}`;
+    return `${roomId}/${fileId}`;
   }
 
-  async function downloadUrlFor(storagePath: string, rawFileName: string, mimeType: string) {
+  async function downloadUrlFor(storagePath: string, rawFileName: string | null, mimeType: string) {
     return getSignedUrl(
       s3!,
       new GetObjectCommand({
         Bucket: bucket,
         Key: storagePath,
-        ResponseContentDisposition: `attachment; filename="${encodeURIComponent(rawFileName)}"`,
+        ResponseContentDisposition: rawFileName
+          ? `attachment; filename="${encodeURIComponent(rawFileName)}"`
+          : "attachment",
         ResponseContentType: mimeType,
       }),
       { expiresIn: PRESIGNED_URL_TTL_SECONDS }
@@ -203,13 +196,13 @@ Deno.serve(async (req) => {
   // ---------- Multipart uploads (chunked end-to-end encrypted files) ----------
 
   if (action === "multipart-create") {
-    const rawFileName = String(body?.fileName || "unnamed-file").trim();
     const fileSize = Number(body?.fileSize || 0);
     if (fileSize > MAX_FILE_SIZE + 64 * 1024 * 1024) {
       // allow the per-chunk encryption overhead on top of the 1.5 GB plaintext limit
       return jsonResponse({ error: "File exceeds 1.5 GB maximum transfer size" }, 400);
     }
-    const storagePath = objectKeyFor(rawFileName, body?.fileId);
+    // Multipart uploads are always encrypted; the receiver names the file after decrypting.
+    const storagePath = objectKeyFor(body?.fileId);
     try {
       const createUrl = await getSignedUrl(
         s3,
@@ -223,7 +216,7 @@ Deno.serve(async (req) => {
         success: true,
         uploadId,
         storagePath,
-        downloadUrl: await downloadUrlFor(storagePath, rawFileName, "application/octet-stream"),
+        downloadUrl: await downloadUrlFor(storagePath, null, "application/octet-stream"),
         expiresIn: PRESIGNED_URL_TTL_SECONDS,
       });
     } catch (err: any) {

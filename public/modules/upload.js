@@ -74,7 +74,6 @@ async function uploadChunkedEncrypted({ file, fileId, targetRoomId, onProgress, 
   const created = await signApi({
     action: "multipart-create",
     roomId: targetRoomId,
-    fileName: file.name,
     fileId,
     fileSize: encryptor.encryptedSize,
   });
@@ -144,7 +143,7 @@ async function uploadChunkedEncrypted({ file, fileId, targetRoomId, onProgress, 
   } catch (err) {
     signApi({ action: "multipart-abort", roomId: targetRoomId, storagePath, uploadId }).catch(() => {});
     if (abortSignal?.aborted) throw abortedError();
-    logErrorToSupabase("upload_chunked_error", err, { fileName: file.name, fileSize: file.size });
+    logErrorToSupabase("upload_chunked_error", err, { fileSize: file.size });
     throw err;
   } finally {
     abortSignal?.removeEventListener("abort", onAbort);
@@ -218,7 +217,9 @@ function uploadSingleShot({ file, fileId, targetRoomId, onProgress, abortSignal 
         body: {
           action: "upload",
           roomId: targetRoomId,
-          fileName: file.name,
+          // Encrypted files are named by the receiver after decrypting; only the
+          // unencrypted fallback needs the name for a direct download.
+          ...(isEncrypted ? {} : { fileName: file.name }),
           fileId,
           mimeType: isEncrypted ? "application/octet-stream" : (file.type || "application/octet-stream"),
           fileSize: payloadToSend.size
@@ -266,7 +267,6 @@ function uploadSingleShot({ file, fileId, targetRoomId, onProgress, abortSignal 
         } else {
           console.error("R2 PUT error:", xhr.status, xhr.responseText);
           logErrorToSupabase("upload_r2_error", new Error(`R2 upload status ${xhr.status}`), {
-            fileName: file.name,
             fileSize: file.size
           });
           cleanupStorage();
@@ -796,7 +796,6 @@ export function setupFileUpload({
         } else {
           console.error(`Upload of ${originalName} failed:`, err);
           logErrorToSupabase("upload_file_failed", err, {
-            fileName: originalName,
             fileSize: size
           });
           failedCount++;

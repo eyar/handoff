@@ -63,8 +63,16 @@ test("upload action generates both presigned PUT and GET URLs", async () => {
   assert.equal(res.json.success, true);
   assert.match(res.json.uploadUrl, /handoff-files\.r2\.cloudflarestorage\.com/);
   assert.match(res.json.downloadUrl, /handoff-files\.r2\.cloudflarestorage\.com/);
-  assert.equal(res.json.storagePath, `${ROOM}/123-video.mp4`);
+  assert.equal(res.json.storagePath, `${ROOM}/123`);
   assert.equal(s3Stub.signed.length, 2);
+  assert.equal(s3Stub.signed[1].command.input.ResponseContentDisposition, 'attachment; filename="video.mp4"');
+});
+
+test("encrypted uploads keep the file name out of the object key and download URL", async () => {
+  const res = await call({ action: "upload", roomId: ROOM, fileId: "123", fileSize: 1024 });
+  assert.equal(res.status, 200);
+  assert.equal(res.json.storagePath, `${ROOM}/123`);
+  assert.equal(s3Stub.signed[1].command.input.ResponseContentDisposition, "attachment");
 });
 
 test("files over 1.5 GB are rejected", async () => {
@@ -153,7 +161,9 @@ test("multipart-create starts an upload in the room's folder and returns a downl
   const res = await call({ action: "multipart-create", roomId: ROOM, fileName: "big video.mov", fileId: "f1", fileSize: 500 * 1024 * 1024 });
   assert.equal(res.status, 200);
   assert.equal(res.json.uploadId, "up-1");
-  assert.equal(res.json.storagePath, `${ROOM}/f1-big_video.mov`);
+  // Older clients still send fileName; it must not reach the key or the download URL
+  assert.equal(res.json.storagePath, `${ROOM}/f1`);
+  assert.ok(s3Stub.signed.every((s) => !JSON.stringify(s.command.input).includes("big")));
   assert.ok(res.json.downloadUrl.includes("mock-get"));
   assert.equal(fetched[0].opts.method, "POST");
 });
