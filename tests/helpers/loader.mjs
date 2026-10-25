@@ -22,6 +22,12 @@ export async function resolve(specifier, context, nextResolve) {
   if (specifier === "./constants.js" && context.parentURL?.includes("faircap=on")) {
     return { url: stub("constants-faircap.js"), shortCircuit: true };
   }
+  // computerBridge.js only needs the camera code under test; skip the
+  // Supabase client, the realtime module graph and the UMD QR decoder.
+  if (context.parentURL?.includes("/modules/computerBridge.js") &&
+      ["./realtime.js", "./supabaseClient.js", "../vendor/jsqr/jsQR.mjs"].includes(specifier)) {
+    return { url: stub("scanner-deps.js"), shortCircuit: true };
+  }
   return nextResolve(specifier, context);
 }
 

@@ -15,6 +15,8 @@ let isBridgeProcessing = false;
 let currentFacingMode = "environment";
 let availableVideoDevices = [];
 let currentDeviceIndex = 0;
+// Bumped by stopCamera() so an in-flight startCamera() knows it was superseded
+let cameraGeneration = 0;
 
 // Initialize native BarcodeDetector if available
 if (typeof window !== "undefined" && "BarcodeDetector" in window) {
@@ -178,6 +180,8 @@ async function startCamera(preferDeviceId = null) {
   if (!video) return;
 
   stopCamera();
+  const generation = cameraGeneration;
+  const isStale = () => generation !== cameraGeneration || !isScanning;
 
   let stream = null;
 
@@ -287,9 +291,16 @@ async function startCamera(preferDeviceId = null) {
     }
   }
 
+  // Scanner was closed or restarted while the camera was opening
+  if (isStale()) {
+    stopTracks(stream);
+    return;
+  }
+
   videoStream = stream;
   video.srcObject = videoStream;
-  await video.play();
+  await playVideo(video);
+  if (isStale()) return;
 
   // Inspect track and ensure we didn't end up on front camera when wanting rear
   try {
@@ -305,8 +316,10 @@ async function startCamera(preferDeviceId = null) {
       }) || availableVideoDevices.find((d) => d.deviceId !== settings.deviceId);
 
       if (backDevice && backDevice.deviceId !== settings.deviceId) {
-        stopCamera();
-        videoStream = await navigator.mediaDevices.getUserMedia({
+        stopTracks(videoStream);
+        videoStream = null;
+        video.srcObject = null;
+        const backStream = await navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: { exact: backDevice.deviceId },
             width: { ideal: 1280 },
@@ -314,8 +327,14 @@ async function startCamera(preferDeviceId = null) {
           },
           audio: false
         });
+        if (isStale()) {
+          stopTracks(backStream);
+          return;
+        }
+        videoStream = backStream;
         video.srcObject = videoStream;
-        await video.play();
+        await playVideo(video);
+        if (isStale()) return;
       }
     }
 
@@ -334,17 +353,34 @@ async function startCamera(preferDeviceId = null) {
   requestAnimationFrame(tick);
 }
 
+// play() rejects with AbortError when srcObject changes before playback starts
+// (scanner closed or camera switched mid-start); that's expected, not an error.
+async function playVideo(video) {
+  try {
+    await video.play();
+  } catch (err) {
+    if (err?.name !== "AbortError") {
+      console.warn("Camera preview failed to play:", err);
+    }
+  }
+}
+
+function stopTracks(stream) {
+  stream?.getTracks().forEach((track) => {
+    try {
+      track.stop();
+    } catch (_) {}
+  });
+}
+
 function stopCamera() {
+  cameraGeneration++;
   if (scanAnimationFrame) {
     cancelAnimationFrame(scanAnimationFrame);
     scanAnimationFrame = null;
   }
   if (videoStream) {
-    videoStream.getTracks().forEach((track) => {
-      try {
-        track.stop();
-      } catch (_) {}
-    });
+    stopTracks(videoStream);
     videoStream = null;
   }
   const video = $("#qr-scanner-video");
