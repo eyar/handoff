@@ -17,3 +17,6 @@ supabase/.temp/
 supabase/snippets/
 dist-extension/
 supabase/.branches/
+
+# Personal Claude Code settings
+.claude/settings.local.json
