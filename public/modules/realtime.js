@@ -8,6 +8,7 @@ import { clearSavedComputerSession, setPaidSession } from "./session.js";
 import { recordDiagnostic, logErrorToSupabase } from "./diagnostics.js";
 import { updateUrlOpenerUI } from "./urlDetector.js";
 import { encryptText } from "./crypto.js";
+import { sealChannel } from "./sealedBroadcast.js";
 import { notifyPairingChanged } from "./extensionBridge.js";
 import { presenceMeta } from "./peers.js";
 
@@ -93,12 +94,12 @@ export function setupRealtimeChannel(targetRoomId, role) {
     state.channel = null;
   }
 
-  state.channel = supabase.channel(`handoff:${targetRoomId}`, {
+  state.channel = sealChannel(supabase.channel(`handoff:${targetRoomId}`, {
     config: {
       broadcast: { self: false },
       presence: { key: `${role}:${state.deviceId}` }
     }
-  });
+  }));
 
   state.channel
     .on("broadcast", { event: "peer:hello" }, async ({ payload }) => {
