@@ -335,7 +335,7 @@ async function phonePairingRoom() {
   }
 }
 
-function renderStagedPairingQr({ roomId, keyBase64 }) {
+function renderStagedPairingQr({ roomId, keyBase64 }, target = "#staged-phone-qr") {
   let pairingOrigin = location.origin;
   if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
     pairingOrigin = "https://tunnel.handoffdrop.app";
@@ -343,11 +343,56 @@ function renderStagedPairingQr({ roomId, keyBase64 }) {
   const qr = qrcode(0, "M");
   qr.addData(`${pairingOrigin}/?room=${roomId}${keyBase64 ? `#key=${keyBase64}` : ""}`);
   qr.make();
-  const qrEl = $("#staged-phone-qr");
+  const qrEl = $(target);
   if (qrEl) {
     qrEl.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 1, scalable: true });
   }
 }
+
+// Grace period before offering to pair, so a computer that briefly drops off (tab switch, reconnect) doesn't flash the card
+const PAIR_CARD_DELAY_MS = 2500;
+let pairCardTimer = null;
+
+/** Shows the phone's pair card while no computer is in the room. The staged card already offers the same. */
+state.onPhonePresence = (hasComputer) => {
+  clearTimeout(pairCardTimer);
+  const cardEl = $("#phone-pair-card");
+  if (hasComputer) {
+    cardEl?.classList.add("hidden");
+    const kickerEl = $("#phone-kicker");
+    if (kickerEl) kickerEl.textContent = "You’re connected";
+    return;
+  }
+  pairCardTimer = setTimeout(() => {
+    if (state.currentRole !== "phone" || !state.roomId) return;
+    if (!$("#phone-staged-connect-card")?.classList.contains("hidden")) return;
+    renderStagedPairingQr({ roomId: state.roomId, keyBase64: state.cryptoKeyBase64 }, "#phone-pair-qr");
+    cardEl?.classList.remove("hidden");
+    const phoneTitle = $("#phone-title");
+    if (phoneTitle) phoneTitle.textContent = "Send it to your computer.";
+    const kickerEl = $("#phone-kicker");
+    if (kickerEl) kickerEl.textContent = "Not paired";
+    const phoneTimer = $("#phone-timer");
+    if (phoneTimer) {
+      phoneTimer.textContent = "Waiting";
+      phoneTimer.className = "pill";
+    }
+  }, PAIR_CARD_DELAY_MS);
+};
+
+$("#phone-pair-scan-btn")?.addEventListener("click", () => {
+  openPairingScanner({
+    title: "Scan Computer Screen",
+    statusText: "Point camera at the QR code on your PC screen…",
+    triggerBtn: "#phone-pair-scan-btn",
+    onScan: (scannedRoomId, scannedKey) => {
+      if (scannedRoomId === state.roomId) return;
+      $("#phone-pair-card")?.classList.add("hidden");
+      connectPhoneSession({ roomId: scannedRoomId, keyBase64: scannedKey });
+    }
+  });
+});
+
 const PENDING_SHARED_TEXT_KEY = "handoff_pending_shared_text";
 let pendingTextDelivery = 0;
 

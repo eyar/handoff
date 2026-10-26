@@ -567,7 +567,9 @@ export function setupRealtimeChannel(targetRoomId, role) {
           }
         }
       } else if (role === "phone") {
-        if (allPeers.some((p) => p.role === "computer")) {
+        const hasComputer = allPeers.some((p) => p.role === "computer");
+        state.onPhonePresence?.(hasComputer);
+        if (hasComputer) {
           const phoneTitle = $("#phone-title");
           if (phoneTitle) {
             if (state.incomingFileTransfers.size > 0) {
@@ -770,6 +772,7 @@ export function resetToHome(notice) {
   $("#computer-e2ee-badge")?.classList.add("hidden");
   $("#phone-e2ee-badge")?.classList.add("hidden");
   $("#bridge-prompt-card")?.classList.add("hidden");
+  state.onPhonePresence?.(true);
   renderFiles([]);
   resetComputerPairingUI();
 

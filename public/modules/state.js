@@ -20,7 +20,9 @@ export const state = {
   isTargetWindows: false,
   cryptoKey: null,
   cryptoKeyBase64: null,
-  isPeerE2ee: false
+  isPeerE2ee: false,
+  // Set by app.js; told whether a computer is in the phone's room on every presence sync
+  onPhonePresence: null
 };
 
 export function getRole() {
