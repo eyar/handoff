@@ -2,7 +2,7 @@
 // Only active when embedded by an allowlisted extension; it accepts commands and reports pairing
 // status, and never exposes anything received from the phone.
 import { state } from "./state.js";
-import { $ } from "./dom.js";
+import { $, isDesktopComputer } from "./dom.js";
 import { EXTENSION_ORIGINS } from "./constants.js";
 
 // Captured at load: the app later cleans its URL with history.replaceState
@@ -84,6 +84,30 @@ export function notifyPairingChanged(isPaired) {
 // In the extension's side panel the pairing QR should show right away, without the start screen
 export function isEmbeddedByExtension() {
   return embeddedByExtension;
+}
+
+const EXTENSION_STORE_URLS = {
+  chrome: "https://chromewebstore.google.com/detail/jmjapgakklfhafbgheccblmkhnmbmnkd",
+  edge: "https://microsoftedge.microsoft.com/addons/detail/glgcblooikklbddfhfdelcimhpaieahp"
+};
+
+/** Store page for this browser's extension, or null where it can't be installed (Firefox, Safari, phones). */
+export function extensionStoreUrl(nav = navigator) {
+  const ua = nav.userAgent || "";
+  const brands = (nav.userAgentData?.brands || []).map((b) => b.brand);
+  if (brands.includes("Microsoft Edge") || /\bEdg\//.test(ua)) return EXTENSION_STORE_URLS.edge;
+  if (brands.includes("Chromium") || /\bChrome\//.test(ua)) return EXTENSION_STORE_URLS.chrome;
+  return null;
+}
+
+// Reveals the [data-extension-link] promos on desktop browsers that can install the extension
+export function showExtensionLinks() {
+  const url = !embeddedByExtension && isDesktopComputer() ? extensionStoreUrl() : null;
+  if (!url) return;
+  document.querySelectorAll("[data-extension-link]").forEach((el) => {
+    if (el.tagName === "A") el.href = url;
+    el.classList.remove("hidden");
+  });
 }
 
 export function initExtensionBridge() {

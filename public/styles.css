@@ -2023,6 +2023,8 @@ body.maintenance-mode textarea {
 
 .ios-shortcut-hint {
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   justify-content: center;
   margin-top: 8px;
   margin-bottom: 12px;

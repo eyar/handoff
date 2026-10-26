@@ -66,7 +66,7 @@ import {
   FILE_TTL_MS
 } from "./modules/constants.js";
 import { initShareTarget } from "./modules/shareTarget.js";
-import { initExtensionBridge, isEmbeddedByExtension } from "./modules/extensionBridge.js";
+import { initExtensionBridge, isEmbeddedByExtension, showExtensionLinks } from "./modules/extensionBridge.js";
 import { sweepStaleDecryptedFiles } from "./modules/diskDecrypt.js";
 
 // Initialize global uncaught error and promise rejection telemetry
@@ -77,6 +77,7 @@ initKillSwitch();
 
 // Accept text/files from the Handoff browser extension when embedded in its side panel
 initExtensionBridge();
+showExtensionLinks();
 
 // Initialize File Upload handlers
 state.desktopFileUpload = setupFileUpload({
