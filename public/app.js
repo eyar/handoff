@@ -67,6 +67,7 @@ import {
 } from "./modules/constants.js";
 import { initShareTarget } from "./modules/shareTarget.js";
 import { initExtensionBridge, isEmbeddedByExtension, showExtensionLinks } from "./modules/extensionBridge.js";
+import { isIosDevice } from "./modules/peers.js";
 import { sweepStaleDecryptedFiles } from "./modules/diskDecrypt.js";
 
 // Initialize global uncaught error and promise rejection telemetry
@@ -78,6 +79,8 @@ initKillSwitch();
 // Accept text/files from the Handoff browser extension when embedded in its side panel
 initExtensionBridge();
 showExtensionLinks();
+// The Shortcut installs on the phone itself, so only iPhones and iPads are offered it there
+if (isIosDevice()) $("#phone-ios-shortcut-link")?.classList.remove("hidden");
 
 // Initialize File Upload handlers
 state.desktopFileUpload = setupFileUpload({

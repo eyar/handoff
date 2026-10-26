@@ -10,7 +10,7 @@ import { updateUrlOpenerUI } from "./urlDetector.js";
 import { encryptText } from "./crypto.js";
 import { sealChannel } from "./sealedBroadcast.js";
 import { notifyPairingChanged } from "./extensionBridge.js";
-import { presenceMeta } from "./peers.js";
+import { presenceMeta, otherPeers } from "./peers.js";
 
 export function onPhoneConnected() {
   $("#qr")?.classList.add("hidden");
@@ -64,6 +64,7 @@ export function onComputerConnected() {
 
 export function resetComputerPairingUI() {
   $("#qr")?.classList.remove("hidden");
+  $("#ios-shortcut-link")?.classList.add("hidden");
   const title = $("#computer-title");
   if (title) title.textContent = "Scan this with your phone.";
   const kicker = $("#computer-kicker");
@@ -555,6 +556,8 @@ export function setupRealtimeChannel(targetRoomId, role) {
       const hasPhone = allPeers.some((p) => p.role === "phone");
 
       if (role === "computer") {
+        // The iOS Shortcut tip only helps once an iPhone is in the room
+        $("#ios-shortcut-link")?.classList.toggle("hidden", !otherPeers().some((p) => p.ios === true));
         if (otherComputer) {
           onComputerConnected();
           if (state.desktopTextSync && $("#desktop-text")?.value?.trim()) {

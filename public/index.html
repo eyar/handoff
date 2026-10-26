@@ -49,12 +49,12 @@
         <div id="qr" class="qr" aria-label="Pairing QR code"></div>
         <p id="peer-status" class="status">Waiting for your phone…</p>
         <div class="ios-shortcut-hint">
-          <a href="/shortcut/" target="_blank" rel="noopener" class="shortcut-tip-link">
+          <a href="/shortcut/" target="_blank" rel="noopener" id="ios-shortcut-link" class="shortcut-tip-link hidden">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" aria-hidden="true">
               <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
               <line x1="12" y1="18" x2="12.01" y2="18"></line>
             </svg>
-            <span>iPhone user? Add to iOS Share Sheet</span>
+            <span>Send from any iPhone app: add Handoff to your Share Sheet</span>
           </a>
           <a href="https://chromewebstore.google.com/detail/jmjapgakklfhafbgheccblmkhnmbmnkd" target="_blank" rel="noopener" class="shortcut-tip-link hidden" data-extension-link>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" aria-hidden="true">
@@ -393,6 +393,16 @@
             </svg>
             <span>Scan Computer 2</span>
           </button>
+        </div>
+
+        <div class="ios-shortcut-hint">
+          <a href="/shortcut/" target="_blank" rel="noopener" id="phone-ios-shortcut-link" class="shortcut-tip-link hidden">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" aria-hidden="true">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+            <span>Send from any app: add Handoff to your Share Sheet</span>
+          </a>
         </div>
 
         <button id="phone-end" class="link-button">End handoff</button>
