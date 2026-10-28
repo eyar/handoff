@@ -2358,24 +2358,22 @@ body.maintenance-mode textarea {
 
 
 
-/* Home page explainer: how it works, features and FAQ */
-.home-about {
-  margin-top: 40px;
-  padding-top: 32px;
-  border-top: 1px solid #e2e8f0;
+/* Explainer card below the active view: how it works, features and FAQ */
+.about-card {
+  margin-top: 24px;
   text-align: left;
   color: #334155;
   line-height: 1.6;
   font-size: 0.95rem;
 }
 
-.home-about h2 {
+.about-card h2 {
   margin: 28px 0 12px;
   font-size: 1.1rem;
   color: #0f172a;
 }
 
-.home-about h2:first-child {
+.about-card h2:first-child {
   margin-top: 0;
 }
 
@@ -2390,7 +2388,7 @@ body.maintenance-mode textarea {
   margin-bottom: 8px;
 }
 
-.home-about a {
+.about-card a {
   color: #15803d;
   text-underline-offset: 2px;
 }
@@ -2408,4 +2406,9 @@ body.maintenance-mode textarea {
 
 .home-faq details p {
   margin: 8px 0 0;
+}
+
+/* The extension's side panel is narrow and its users already know the app */
+.embed-extension .about-card {
+  display: none;
 }

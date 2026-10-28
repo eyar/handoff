@@ -87,6 +87,20 @@ export function resetComputerPairingUI() {
   notifyPairingChanged(false);
 }
 
+/** What a phone calls the device on the other end: a computer, unless only another phone is in the room. */
+function phonePeerName() {
+  const peers = otherPeers();
+  return !peers.some((p) => p.role === "computer") && peers.some((p) => p.role === "phone") ? "other phone" : "computer";
+}
+
+/** Points the phone's labels and status messages at whichever device it's paired with. */
+function setPhonePeerName(name) {
+  state.phoneTextSync?.setTargetDeviceName?.(name);
+  state.phoneFileUpload?.setTargetDeviceName?.(name);
+  const label = $("#phone-received-files-label");
+  if (label) label.textContent = name === "computer" ? "Files from your computer" : "Files from the other phone";
+}
+
 export function setupRealtimeChannel(targetRoomId, role) {
   state.currentRole = role;
   recordDiagnostic("realtime", "Setting up channel", { roomId: targetRoomId, role });
@@ -366,12 +380,12 @@ export function setupRealtimeChannel(targetRoomId, role) {
     })
     .on("broadcast", { event: "text:sync" }, ({ payload }) => {
       if (payload?.text !== undefined && payload?.text !== null) {
-        handleSyncedText(payload.text, role === "computer" ? "phone" : "computer", payload?.expiresAt);
+        handleSyncedText(payload.text, role === "computer" ? "phone" : phonePeerName(), payload?.expiresAt);
       }
     })
     .on("broadcast", { event: "text:received" }, ({ payload }) => {
       if (payload?.text !== undefined && payload?.text !== null) {
-        handleSyncedText(payload.text, role === "computer" ? "phone" : "computer", payload?.expiresAt);
+        handleSyncedText(payload.text, role === "computer" ? "phone" : phonePeerName(), payload?.expiresAt);
       }
     })
     .on("broadcast", { event: "text:expired" }, () => {
@@ -571,7 +585,20 @@ export function setupRealtimeChannel(targetRoomId, role) {
         }
       } else if (role === "phone") {
         const hasComputer = allPeers.some((p) => p.role === "computer");
-        state.onPhonePresence?.(hasComputer);
+        const hasOtherPhone = allPeers.some((p) => p.role === "phone" && p.deviceId !== state.deviceId);
+        state.onPhonePresence?.(hasComputer || hasOtherPhone);
+        setPhonePeerName(phonePeerName());
+        if (!hasComputer && hasOtherPhone) {
+          const phoneTitle = $("#phone-title");
+          if (phoneTitle) phoneTitle.textContent = "Connected to phone";
+          setStatus($("#phone-peer-status") || $("#phone-result"), "");
+          const phoneTimer = $("#phone-timer");
+          if (phoneTimer) {
+            phoneTimer.textContent = "Live session";
+            phoneTimer.className = "pill live-pill";
+          }
+          $("#phone-e2ee-badge")?.classList.toggle("hidden", !state.cryptoKey);
+        }
         if (hasComputer) {
           const phoneTitle = $("#phone-title");
           if (phoneTitle) {
@@ -776,6 +803,7 @@ export function resetToHome(notice) {
   $("#phone-e2ee-badge")?.classList.add("hidden");
   $("#bridge-prompt-card")?.classList.add("hidden");
   state.onPhonePresence?.(true);
+  setPhonePeerName("computer");
   renderFiles([]);
   resetComputerPairingUI();
 

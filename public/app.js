@@ -66,7 +66,7 @@ import {
   FILE_TTL_MS
 } from "./modules/constants.js";
 import { initShareTarget } from "./modules/shareTarget.js";
-import { initExtensionBridge, isEmbeddedByExtension, showExtensionLinks } from "./modules/extensionBridge.js";
+import { initExtensionBridge, showExtensionLinks } from "./modules/extensionBridge.js";
 import { isIosDevice } from "./modules/peers.js";
 import { sweepStaleDecryptedFiles } from "./modules/diskDecrypt.js";
 
@@ -212,7 +212,8 @@ window.handleComputerBridgeRedirect = async (targetRoomId, targetKeyBase64 = nul
 };
 
 $("#create-room")?.addEventListener("click", () => {
-  startComputerSession();
+  if (isDesktopComputer()) startComputerSession();
+  else phonePairingRoom().then(connectPhoneSession);
 });
 
 // End Room buttons
@@ -353,27 +354,31 @@ function renderStagedPairingQr({ roomId, keyBase64 }, target = "#staged-phone-qr
   }
 }
 
-// Grace period before offering to pair, so a computer that briefly drops off (tab switch, reconnect) doesn't flash the card
+// Grace period before offering to pair again, so a device that briefly drops off (tab switch, reconnect) doesn't flash the card
 const PAIR_CARD_DELAY_MS = 2500;
 let pairCardTimer = null;
+let roomWithPeerSeen = null;
 
-/** Shows the phone's pair card while no computer is in the room. The staged card already offers the same. */
-state.onPhonePresence = (hasComputer) => {
+/** Shows the phone's pair card while no other device is in the room. The staged card already offers the same. */
+state.onPhonePresence = (hasPeer) => {
   clearTimeout(pairCardTimer);
   const cardEl = $("#phone-pair-card");
-  if (hasComputer) {
+  if (hasPeer) {
+    roomWithPeerSeen = state.roomId;
     cardEl?.classList.add("hidden");
     const kickerEl = $("#phone-kicker");
     if (kickerEl) kickerEl.textContent = "You’re connected";
     return;
   }
+  // A room nobody has joined yet shows the card straight away
+  const delay = roomWithPeerSeen === state.roomId ? PAIR_CARD_DELAY_MS : 0;
   pairCardTimer = setTimeout(() => {
     if (state.currentRole !== "phone" || !state.roomId) return;
     if (!$("#phone-staged-connect-card")?.classList.contains("hidden")) return;
     renderStagedPairingQr({ roomId: state.roomId, keyBase64: state.cryptoKeyBase64 }, "#phone-pair-qr");
     cardEl?.classList.remove("hidden");
     const phoneTitle = $("#phone-title");
-    if (phoneTitle) phoneTitle.textContent = "Send it to your computer.";
+    if (phoneTitle) phoneTitle.textContent = "Connect your devices.";
     const kickerEl = $("#phone-kicker");
     if (kickerEl) kickerEl.textContent = "Not paired";
     const phoneTimer = $("#phone-timer");
@@ -381,13 +386,13 @@ state.onPhonePresence = (hasComputer) => {
       phoneTimer.textContent = "Waiting";
       phoneTimer.className = "pill";
     }
-  }, PAIR_CARD_DELAY_MS);
+  }, delay);
 };
 
 $("#phone-pair-scan-btn")?.addEventListener("click", () => {
   openPairingScanner({
-    title: "Scan Computer Screen",
-    statusText: "Point camera at the QR code on your PC screen…",
+    title: "Scan a QR Code",
+    statusText: "Point camera at the QR code on the other device…",
     triggerBtn: "#phone-pair-scan-btn",
     onScan: (scannedRoomId, scannedKey) => {
       if (scannedRoomId === state.roomId) return;
@@ -640,7 +645,8 @@ if (isDesktop) {
   const targetRoom = requestedRoom || savedComputerSession?.roomId;
   if (targetRoom) {
     startComputerSession(targetRoom, savedComputerSession?.createdAt, hashKey);
-  } else if (isEmbeddedByExtension()) {
+  } else {
+    // Open straight on the pairing QR; that's what a computer visit is for
     startComputerSession();
   }
 } else if (requestedRoom) {
@@ -887,6 +893,12 @@ if (sharedQueryText) {
       history.replaceState(null, "", cleanUrl.pathname + (newQuery ? `?${newQuery}` : ""));
     } catch (_) {}
   }, 300);
+}
+
+// A phone with nothing to resume opens its own room: its QR for another phone, and a scanner for a
+// computer's QR. A share from the iOS Shortcut has already done this through the staged card.
+if (!isDesktop && !state.roomId && $("#phone-staged-connect-card")?.classList.contains("hidden")) {
+  phonePairingRoom().then(connectPhoneSession);
 }
 
 if (typeof window !== "undefined") {
