@@ -18,7 +18,100 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/styles.css?v=20260928_25" />
+    <link rel="stylesheet" href="/styles.css?v=20261028_1" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://handoffdrop.app/#app",
+          "name": "Handoff",
+          "alternateName": "handoffdrop.app",
+          "url": "https://handoffdrop.app/",
+          "description": "Send photos, files and text between your phone and any computer by scanning a QR code. Works in the browser with no app or account, end-to-end encrypted, free and open source.",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web browser): iOS, Android, Windows, macOS, Linux, ChromeOS",
+          "browserRequirements": "Requires a modern web browser with JavaScript",
+          "isAccessibleForFree": true,
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+          "featureList": [
+            "QR code pairing between phone and computer",
+            "End-to-end encryption (AES-256-GCM) in the browser",
+            "Files up to 1.5 GB each",
+            "Files deleted after 15 minutes, text after 60 seconds",
+            "Automatic HEIC to JPG conversion",
+            "Works across networks, no shared Wi-Fi needed",
+            "Computer-to-computer transfers",
+            "iOS Share Sheet shortcut, Android share target and Chrome/Edge extension"
+          ],
+          "sameAs": [
+            "https://github.com/eyar/handoff",
+            "https://chromewebstore.google.com/detail/jmjapgakklfhafbgheccblmkhnmbmnkd",
+            "https://microsoftedge.microsoft.com/addons/detail/glgcblooikklbddfhfdelcimhpaieahp"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is Handoff free?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. There’s no account, subscription or paywall. Each file can be up to 1.5 GB."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I need to install an app?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Both devices only need a web browser. The iOS shortcut and the browser extension are optional extras."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do both devices need to be on the same Wi-Fi?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Any internet connection works on either device, including mobile data."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can Handoff see my files?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Files and text sent from the app are encrypted on your device before upload, and the key never leaves the QR link. Files shared through the iOS Shortcut are the exception: they’re uploaded before pairing, so they aren’t end-to-end encrypted."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How long are files kept?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Files are deleted automatically after 15 minutes and shared text after 60 seconds. Ending the handoff deletes everything right away."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How is it different from AirDrop?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "AirDrop only works between Apple devices that are near each other. Handoff works between any phone and any computer, over any network, without installing anything."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <main class="shell">
@@ -40,6 +133,54 @@
             </svg>
             <span>Send links &amp; images with a right-click: get the extension</span>
           </a>
+        </div>
+
+        <div class="home-about">
+          <h2>How it works</h2>
+          <ol class="home-steps">
+            <li><strong>Open handoffdrop.app on your computer</strong> and click “Start a handoff”. A QR code appears.</li>
+            <li><strong>Scan it with your phone’s camera.</strong> The session opens in your phone’s browser. No app, no account.</li>
+            <li><strong>Send photos, videos, files or text either way.</strong> They show up on the other device right away.</li>
+          </ol>
+
+          <h2>What you get</h2>
+          <ul class="home-facts">
+            <li><strong>Works across platforms:</strong> iPhone, Android, Windows, Mac, Linux and Chromebook, in any modern browser. Computer to computer works too.</li>
+            <li><strong>No shared Wi-Fi needed:</strong> your phone can be on 5G while your computer is on another network.</li>
+            <li><strong>Files up to 1.5 GB each,</strong> including 4K video. iPhone HEIC photos are converted to JPG so they open on Windows.</li>
+            <li><strong>End-to-end encrypted:</strong> text and files are encrypted in your browser with AES-256-GCM. The key travels only inside the QR link and never reaches our servers.</li>
+            <li><strong>Nothing lingers:</strong> files are deleted after 15 minutes and text after 60 seconds. Ending a handoff deletes everything right away.</li>
+            <li><strong>Free and open source:</strong> no sign-up, no subscription. The code is on <a href="https://github.com/eyar/handoff" target="_blank" rel="noopener">GitHub</a> under the AGPL.</li>
+            <li><strong>Optional shortcuts:</strong> an <a href="/shortcut/" target="_blank" rel="noopener">iOS Share Sheet shortcut</a>, Android’s share menu (once Handoff is added to your home screen), and a <a href="https://chromewebstore.google.com/detail/jmjapgakklfhafbgheccblmkhnmbmnkd" target="_blank" rel="noopener">Chrome</a> and <a href="https://microsoftedge.microsoft.com/addons/detail/glgcblooikklbddfhfdelcimhpaieahp" target="_blank" rel="noopener">Edge</a> extension.</li>
+          </ul>
+
+          <h2>Questions</h2>
+          <div class="home-faq">
+            <details>
+              <summary>Is Handoff free?</summary>
+              <p>Yes. There’s no account, subscription or paywall. Each file can be up to 1.5 GB.</p>
+            </details>
+            <details>
+              <summary>Do I need to install an app?</summary>
+              <p>No. Both devices only need a web browser. The iOS shortcut and the browser extension are optional extras.</p>
+            </details>
+            <details>
+              <summary>Do both devices need to be on the same Wi-Fi?</summary>
+              <p>No. Any internet connection works on either device, including mobile data.</p>
+            </details>
+            <details>
+              <summary>Can Handoff see my files?</summary>
+              <p>No. Files and text sent from the app are encrypted on your device before upload, and the key never leaves the QR link. Files shared through the iOS Shortcut are the exception: they’re uploaded before pairing, so they aren’t end-to-end encrypted.</p>
+            </details>
+            <details>
+              <summary>How long are files kept?</summary>
+              <p>Files are deleted automatically after 15 minutes and shared text after 60 seconds. Ending the handoff deletes everything right away.</p>
+            </details>
+            <details>
+              <summary>How is it different from AirDrop?</summary>
+              <p>AirDrop only works between Apple devices that are near each other. Handoff works between any phone and any computer, over any network, without installing anything.</p>
+            </details>
+          </div>
         </div>
       </section>
 

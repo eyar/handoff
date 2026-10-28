@@ -1,0 +1,35 @@
+# Handoff (handoffdrop.app)
+
+> Handoff is a free, open-source web app for sending photos, videos, files and text between a phone and a computer, or between two computers. You open handoffdrop.app on the computer, scan the QR code with your phone, and transfer in either direction. There's no app to install and no account. Everything sent from the app is end-to-end encrypted in the browser and deleted within minutes.
+
+Key facts:
+
+- Works in any modern browser on iPhone, Android, Windows, macOS, Linux and ChromeOS. The devices don't need to share a Wi-Fi network.
+- Pairing is by QR code. The encryption key (AES-256-GCM) is carried only in the QR link's fragment and never reaches the server.
+- Files can be up to 1.5 GB each. iPhone HEIC photos are converted to JPG automatically.
+- Files are deleted after 15 minutes and shared text after 60 seconds. Ending a handoff deletes everything immediately.
+- Free, with no sign-up or subscription. Source code is AGPL-3.0-or-later.
+- Optional extras: an iOS Share Sheet shortcut, Android's share menu (once Handoff is added to the home screen), and a Chrome/Edge extension for sending links, images and selections from any tab. Files sent through the iOS shortcut are uploaded before pairing, so they aren't end-to-end encrypted.
+- Not affiliated with Apple's Handoff feature or with other products named Handoff.
+
+## Guides
+
+- [Transfer photos from iPhone to PC](https://handoffdrop.app/iphone-to-pc): no iTunes, no cable
+- [AirDrop from iPhone to Windows](https://handoffdrop.app/airdrop-for-windows): a browser-based AirDrop alternative for Windows
+- [Android to Mac](https://handoffdrop.app/android-to-mac): wireless transfer without Android File Transfer
+- [iPhone to Android](https://handoffdrop.app/iphone-to-android): full-quality photos and videos across platforms
+- [Computer to computer](https://handoffdrop.app/computer-to-computer): move files between two computers without a USB drive
+- [Send to any computer](https://handoffdrop.app/send-to-any-computer): get files onto a work, school or library computer without logging in
+
+## Tools
+
+- [iOS Share Sheet shortcut](https://handoffdrop.app/shortcut/)
+- [Chrome extension](https://chromewebstore.google.com/detail/jmjapgakklfhafbgheccblmkhnmbmnkd)
+- [Edge extension](https://microsoftedge.microsoft.com/addons/detail/glgcblooikklbddfhfdelcimhpaieahp)
+- [Source code on GitHub](https://github.com/eyar/handoff)
+
+## Policies
+
+- [Privacy Policy](https://handoffdrop.app/privacy)
+- [Terms and Conditions](https://handoffdrop.app/terms)
+- [Accessibility](https://handoffdrop.app/accessibility)
