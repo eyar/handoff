@@ -14,6 +14,7 @@ import { encryptFile } from "./crypto.js";
 import { createChunkedEncryptor, CHUNK_SIZE } from "./chunkedCrypto.js";
 import { allPeersSupport, anyIosPeerLacks, otherPeers } from "./peers.js";
 import { acquireWakeLock, releaseWakeLock } from "./wakeLock.js";
+import { logFileTransfer } from "./usage.js";
 
 const SINGLE_SHOT_E2EE_MAX = 100 * 1024 * 1024; // legacy whole-file encryption (old peers)
 const PART_CONCURRENCY = 3;
@@ -705,6 +706,7 @@ export function setupFileUpload({
 
       let uploadResult = null;
       let wasCancelled = false;
+      let failed = false;
 
       try {
         state.channel.send({
@@ -798,6 +800,7 @@ export function setupFileUpload({
           logErrorToSupabase("upload_file_failed", err, {
             fileSize: size
           });
+          failed = true;
           failedCount++;
           failedFiles.add(fileToUpload);
           const badge = chipBadgeMap.get(fileToUpload);
@@ -808,6 +811,12 @@ export function setupFileUpload({
         }
       } finally {
         activeUploads.delete(fileToUpload);
+        logFileTransfer({
+          role: state.currentRole,
+          peers: otherPeers(),
+          size,
+          outcome: wasCancelled ? "cancelled" : failed ? "failed" : "ok"
+        });
 
         if (!wasCancelled && !failedFiles.has(fileToUpload)) {
           const idx = stagedFiles.indexOf(fileToUpload);

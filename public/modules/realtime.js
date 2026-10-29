@@ -11,6 +11,7 @@ import { encryptText } from "./crypto.js";
 import { sealChannel } from "./sealedBroadcast.js";
 import { notifyPairingChanged } from "./extensionBridge.js";
 import { presenceMeta, otherPeers } from "./peers.js";
+import { markPaired } from "./usage.js";
 
 export function onPhoneConnected() {
   $("#qr")?.classList.add("hidden");
@@ -572,6 +573,7 @@ export function setupRealtimeChannel(targetRoomId, role) {
       if (role === "computer") {
         // The iOS Shortcut tip only helps once an iPhone is in the room
         $("#ios-shortcut-link")?.classList.toggle("hidden", !otherPeers().some((p) => p.ios === true));
+        if (otherComputer || hasPhone) markPaired("computer", otherPeers());
         if (otherComputer) {
           onComputerConnected();
           if (state.desktopTextSync && $("#desktop-text")?.value?.trim()) {
@@ -587,6 +589,7 @@ export function setupRealtimeChannel(targetRoomId, role) {
         const hasComputer = allPeers.some((p) => p.role === "computer");
         const hasOtherPhone = allPeers.some((p) => p.role === "phone" && p.deviceId !== state.deviceId);
         state.onPhonePresence?.(hasComputer || hasOtherPhone);
+        if (hasComputer || hasOtherPhone) markPaired("phone", otherPeers());
         setPhonePeerName(phonePeerName());
         if (!hasComputer && hasOtherPhone) {
           const phoneTitle = $("#phone-title");

@@ -20,6 +20,7 @@
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
     "keepalive": "node scripts/keepalive-supabase.js",
+    "usage": "node scripts/usage-report.js",
     "package:extension": "node scripts/package-extension.js"
   },
   "dependencies": {

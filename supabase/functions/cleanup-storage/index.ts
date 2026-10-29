@@ -207,6 +207,21 @@ Deno.serve(async (req) => {
       }
     } catch (_) {}
 
+    // 4. Clean up usage_events rows older than 90 days
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+    let deletedUsageCount = 0;
+    try {
+      const { data: deletedUsageData, error: usageDeleteError } = await supabase
+        .from("usage_events")
+        .delete()
+        .lt("created_at", ninetyDaysAgo)
+        .select("id");
+
+      if (!usageDeleteError) {
+        deletedUsageCount = (deletedUsageData || []).length;
+      }
+    } catch (_) {}
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -223,6 +238,10 @@ Deno.serve(async (req) => {
         clientErrors: {
           deletedCount: deletedErrorsCount,
           cutoff: fortyEightHoursAgo,
+        },
+        usageEvents: {
+          deletedCount: deletedUsageCount,
+          cutoff: ninetyDaysAgo,
         },
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }

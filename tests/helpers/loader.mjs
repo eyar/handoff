@@ -10,6 +10,10 @@ export async function resolve(specifier, context, nextResolve) {
   if (specifier === "/config.js") {
     return { url: stub("config.js"), shortCircuit: true };
   }
+  // Browser modules load the vendored Supabase client by absolute path.
+  if (specifier === "/vendor/supabase/supabase.esm.js") {
+    return { url: stub("supabase.js"), shortCircuit: true };
+  }
   // Edge functions import Supabase and AWS SDK through Deno's npm: specifier.
   if (specifier.startsWith("npm:@supabase/supabase-js")) {
     return { url: stub("supabase.js"), shortCircuit: true };

@@ -4,6 +4,8 @@ import { MAX_TEXT_LENGTH, TEXT_TTL_MS } from "./constants.js";
 import { saveCachedText } from "./session.js";
 import { updateUrlOpenerUI } from "./urlDetector.js";
 import { encryptText, decryptText } from "./crypto.js";
+import { otherPeers } from "./peers.js";
+import { logTextTransfer } from "./usage.js";
 
 export function updateTextExpiryUI(now = Date.now()) {
   const desktopBadge = $("#desktop-text-expiry");
@@ -162,6 +164,7 @@ export async function sendText(text, resultElement) {
       }
     });
     if (content.trim()) {
+      logTextTransfer({ role: getRole(), peers: otherPeers() });
       setStatus(resultElement, "✓ Synced");
     } else {
       setStatus(resultElement, "");
@@ -237,6 +240,7 @@ export function setupLiveTextInput(textareaEl, statusEl, targetDeviceName) {
         }
       });
       lastSentText = currentText;
+      if (currentText.trim()) logTextTransfer({ role: getRole(), peers: otherPeers() });
       if (getRole() === "computer" && state.roomId) {
         saveCachedText(state.roomId, currentText);
       }

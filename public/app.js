@@ -66,7 +66,8 @@ import {
   FILE_TTL_MS
 } from "./modules/constants.js";
 import { initShareTarget } from "./modules/shareTarget.js";
-import { initExtensionBridge, showExtensionLinks } from "./modules/extensionBridge.js";
+import { initExtensionBridge, showExtensionLinks, isEmbeddedByExtension } from "./modules/extensionBridge.js";
+import { startVisit, entryPoint } from "./modules/usage.js";
 import { isIosDevice } from "./modules/peers.js";
 import { sweepStaleDecryptedFiles } from "./modules/diskDecrypt.js";
 
@@ -639,6 +640,14 @@ const hashParams = new URLSearchParams(hashStr);
 const hashKey = hashParams.get("key") || hashParams.get("k");
 
 const isDesktop = isDesktopComputer();
+
+startVisit(entryPoint({
+  params: urlParams,
+  referrer: document.referrer,
+  host: location.host,
+  embedded: isEmbeddedByExtension(),
+  restored: Boolean(isDesktop ? savedComputerSession : savedPhoneSession)
+}));
 
 // If this browser is a desktop computer:
 if (isDesktop) {
