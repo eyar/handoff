@@ -103,3 +103,13 @@ test("automated browsers aren't counted", async () => {
     delete navigator.webdriver;
   }
 });
+
+test("only errors from Handoff's own scripts are reported", async () => {
+  const { isOwnScript } = await import("../public/modules/diagnostics.js");
+  const origin = "https://handoffdrop.app";
+  assert.equal(isOwnScript("https://handoffdrop.app/modules/upload.js", origin), true);
+  assert.equal(isOwnScript("https://handoffdrop.app/?room=abc&from=pc", origin), false);
+  assert.equal(isOwnScript("chrome-extension://abc/userscript.html?name=x.user.js", origin), false);
+  assert.equal(isOwnScript("https://cdn.example.com/app.js", origin), false);
+  assert.equal(isOwnScript("", origin), false);
+});

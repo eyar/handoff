@@ -95,6 +95,16 @@ export async function copyDiagnostics() {
   return { success: false, text: json };
 }
 
+export function isOwnScript(filename, origin = typeof location !== "undefined" ? location.origin : "") {
+  if (!filename || !origin) return false;
+  try {
+    const url = new URL(filename);
+    return url.origin === origin && url.pathname.endsWith(".js");
+  } catch (_) {
+    return false;
+  }
+}
+
 /**
  * Initializes global uncaught error and unhandled rejection listeners.
  */
@@ -102,6 +112,9 @@ export function initGlobalErrorTracking() {
   if (typeof window === "undefined") return;
 
   window.addEventListener("error", (event) => {
+    // The page has no inline scripts, so anything not from our own .js files is a browser add-on or
+    // userscript (e.g. Firefox for iOS's injected reader script), not a Handoff bug
+    if (!isOwnScript(event?.filename)) return;
     const message = event?.message || "Script error";
     const filename = event?.filename ? event.filename.split("/").pop() : "";
     const lineno = event?.lineno || 0;
