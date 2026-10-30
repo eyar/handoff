@@ -88,6 +88,36 @@ export function resetComputerPairingUI() {
   notifyPairingChanged(false);
 }
 
+// A phone that locks or switches apps usually comes back to a connection that died silently. The client only
+// notices at its next heartbeat, up to ~50 s later, and meanwhile everything looks connected but nothing is
+// delivered. So check straight away: if the heartbeat isn't answered quickly, a second one while the first is
+// still pending makes the client drop the connection and reconnect.
+const RESUME_CHECK_MS = 3000;
+let resumeCheckTimer = null;
+let heartbeatAnswered = false;
+
+function checkConnectionNow() {
+  if (!state.channel) return;
+  clearTimeout(resumeCheckTimer);
+  heartbeatAnswered = false;
+  supabase.realtime.sendHeartbeat();
+  resumeCheckTimer = setTimeout(() => {
+    if (heartbeatAnswered || !state.channel) return;
+    recordDiagnostic("realtime", "No heartbeat reply after resume; reconnecting");
+    supabase.realtime.sendHeartbeat();
+  }, RESUME_CHECK_MS);
+}
+
+if (typeof document !== "undefined") {
+  supabase.realtime.onHeartbeat((status) => {
+    if (status === "ok") heartbeatAnswered = true;
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") checkConnectionNow();
+  });
+  window.addEventListener("online", checkConnectionNow);
+}
+
 /** What a phone calls the device on the other end: a computer, unless only another phone is in the room. */
 function phonePeerName() {
   const peers = otherPeers();

@@ -63,18 +63,30 @@ async function cloudflareDaily() {
     const accountId = zone.result?.account?.id;
     if (!accountId) return { error: zone.errors?.[0]?.message || "couldn't look up the zone's account" };
 
-    const since = new Date(Date.now() - (days - 1) * 86400000).toISOString().slice(0, 10);
-    const graphql = `{ viewer { accounts(filter: { accountTag: "${accountId}" }) {
-      rumPageloadEventsAdaptiveGroups(limit: 100, filter: { requestHost: "${zone.result.name}", date_geq: "${since}" },
-        orderBy: [date_ASC]) { count sum { visits } dimensions { date } } } } }`;
-    const body = await api("/graphql", { method: "POST", body: JSON.stringify({ query: graphql }) });
-    if (body.errors?.length) {
-      const denied = body.errors.some((e) => e.extensions?.code === "authz");
-      return { error: denied ? needsPermission : body.errors[0].message };
+    // Over long ranges Cloudflare answers from a sample (every day becomes a round 10, 20…, and quiet days
+    // drop out), so ask for one week at a time, all weeks at once. Data older than about a week is only kept
+    // as a 1-in-10 sample, so those days stay estimates and are marked with ~
+    const day = (offset) => new Date(Date.now() - offset * 86400000).toISOString().slice(0, 10);
+    const weeks = [];
+    for (let start = days - 1; start >= 0; start -= 7) weeks.push([day(start), day(Math.max(0, start - 6))]);
+    const bodies = await Promise.all(weeks.map(([from, to]) => api("/graphql", {
+      method: "POST",
+      body: JSON.stringify({ query: `{ viewer { accounts(filter: { accountTag: "${accountId}" }) {
+        rumPageloadEventsAdaptiveGroups(limit: 10, orderBy: [date_ASC],
+          filter: { requestHost: "${zone.result.name}", date_geq: "${from}", date_leq: "${to}" }) {
+          count sum { visits } avg { sampleInterval } dimensions { date } } } } }` })
+    })));
+    const errors = bodies.flatMap((body) => body.errors || []);
+    if (errors.length) {
+      const denied = errors.some((e) => e.extensions?.code === "authz");
+      return { error: denied ? needsPermission : errors[0].message };
     }
-    const groups = body.data?.viewer?.accounts?.[0]?.rumPageloadEventsAdaptiveGroups || [];
+    const groups = bodies.flatMap((body) => body.data?.viewer?.accounts?.[0]?.rumPageloadEventsAdaptiveGroups || []);
     return {
-      byDay: new Map(groups.map((g) => [g.dimensions.date, { pageViews: g.count, visits: g.sum.visits }]))
+      byDay: new Map(groups.map((g) => {
+        const mark = g.avg.sampleInterval > 1 ? "~" : "";
+        return [g.dimensions.date, { pageViews: `${mark}${g.count}`, visits: `${mark}${g.sum.visits}` }];
+      }))
     };
   } catch (err) {
     return { error: err.message };
@@ -174,7 +186,7 @@ printTable("Daily", [...allDays].sort().map((day) => {
   };
 }));
 if (cloudflare.error) console.log(`  page_views and cf_visits are blank: ${cloudflare.error}.`);
-console.log("  page_views/cf_visits are Cloudflare Web Analytics page loads in real browsers; app_visits are app opens. Errors are kept for 48 hours.");
+console.log("  page_views/cf_visits are Cloudflare Web Analytics page loads in real browsers (~ = estimated from a 1-in-10 sample);\n  app_visits are app opens. Errors are kept for 48 hours.");
 
 printTable("Pairing rate by entry point", report.byEntry.map(withPairRate), ["entry", "visits", "paired", "pair_rate"]);
 printTable("Pairing rate by device", report.byDevice.map(withPairRate), ["os", "visits", "paired", "pair_rate"]);
