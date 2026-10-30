@@ -113,6 +113,29 @@ export function markPaired(role, peers) {
   });
 }
 
+// Long enough that someone opening a computer's QR link should be paired by then
+const UNPAIRED_CHECK_MS = 60_000;
+
+/**
+ * A minute into a visit that still hasn't paired, notes whether it's connected to the server, which tells an
+ * empty room (an old link, or the other device left) apart from a connection that failed.
+ */
+export function checkUnpairedLater(isConnected) {
+  const visit = readVisit();
+  if (!visit || visit.paired || visit.unpaired) return;
+  setTimeout(() => {
+    const current = readVisit();
+    if (!current || current.paired || current.unpaired) return;
+    current.unpaired = true;
+    saveVisit(current);
+    logEvent("unpaired", {
+      entry: current.entry,
+      os: current.os,
+      server: isConnected() ? "connected" : "not_connected"
+    });
+  }, Math.max(0, visit.at + UNPAIRED_CHECK_MS - Date.now()));
+}
+
 /** One row per file sent: ok, failed or cancelled. */
 export function logFileTransfer({ role, peers, size, outcome }) {
   logEvent("transfer", {

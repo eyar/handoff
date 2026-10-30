@@ -140,6 +140,9 @@ const sections = {
   pairTypes: [`
     SELECT props->>'pair' AS pair, props->>'os' AS os, props->>'peer_ios' AS peer_ios, COUNT(*) AS paired
     FROM public.usage_events WHERE ${since} AND event = 'paired' GROUP BY 1, 2, 3`, "paired DESC"],
+  unpaired: [`
+    SELECT props->>'entry' AS entry, props->>'os' AS os, props->>'server' AS server, COUNT(*) AS visits
+    FROM public.usage_events WHERE ${since} AND event = 'unpaired' GROUP BY 1, 2, 3`, "visits DESC"],
   transfers: [`
     SELECT props->>'kind' AS kind, props->>'from' AS sent_from, props->>'pair' AS pair, props->>'size' AS size,
       COUNT(*) AS total,
@@ -192,6 +195,8 @@ printTable("Pairing rate by entry point", report.byEntry.map(withPairRate), ["en
 printTable("Pairing rate by device", report.byDevice.map(withPairRate), ["os", "visits", "paired", "pair_rate"]);
 printTable("Time from opening to paired", report.waits, ["wait", "paired"]);
 printTable("Pair types", report.pairTypes, ["pair", "os", "peer_ios", "paired"]);
+printTable("Still unpaired after a minute (connected = reached the server, but nobody else was there)",
+  report.unpaired, ["entry", "os", "server", "visits"]);
 printTable("Transfers", report.transfers.map((r) => ({ ...r, ok_rate: pct(r.ok, r.total) })),
   ["kind", "sent_from", "pair", "size", "total", "ok", "failed", "cancelled", "ok_rate"]);
 printTable("Errors in the last 48 hours", report.errors, ["event_type", "message", "n"]);

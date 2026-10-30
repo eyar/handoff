@@ -67,7 +67,7 @@ import {
 } from "./modules/constants.js";
 import { initShareTarget } from "./modules/shareTarget.js";
 import { initExtensionBridge, showExtensionLinks, isEmbeddedByExtension } from "./modules/extensionBridge.js";
-import { startVisit, entryPoint } from "./modules/usage.js";
+import { startVisit, entryPoint, checkUnpairedLater } from "./modules/usage.js";
 import { isIosDevice } from "./modules/peers.js";
 import { sweepStaleDecryptedFiles } from "./modules/diskDecrypt.js";
 
@@ -648,6 +648,7 @@ startVisit(entryPoint({
   embedded: isEmbeddedByExtension(),
   restored: Boolean(isDesktop ? savedComputerSession : savedPhoneSession)
 }));
+checkUnpairedLater(() => state.channel?.state === "joined");
 
 // If this browser is a desktop computer:
 if (isDesktop) {

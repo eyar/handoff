@@ -1,4 +1,4 @@
-import { test, beforeEach } from "node:test";
+import { test, beforeEach, mock } from "node:test";
 import assert from "node:assert/strict";
 import { supabaseStub } from "./stubs/supabase.js";
 
@@ -112,4 +112,38 @@ test("only errors from Handoff's own scripts are reported", async () => {
   assert.equal(isOwnScript("chrome-extension://abc/userscript.html?name=x.user.js", origin), false);
   assert.equal(isOwnScript("https://cdn.example.com/app.js", origin), false);
   assert.equal(isOwnScript("", origin), false);
+});
+
+test("a visit still unpaired after a minute notes whether it reached the server", async () => {
+  mock.timers.enable({ apis: ["setTimeout", "Date"], now: Date.now() });
+  try {
+    usage.startVisit("qr_scan");
+    usage.checkUnpairedLater(() => true);
+    usage.checkUnpairedLater(() => true);
+    mock.timers.tick(59_000);
+    await flush();
+    assert.equal(rows().filter((r) => r.event === "unpaired").length, 0);
+    mock.timers.tick(1_000);
+    await flush();
+    assert.deepEqual(rows().filter((r) => r.event === "unpaired").map((r) => r.props), [
+      { entry: "qr_scan", os: "ios", server: "connected" }
+    ]);
+  } finally {
+    mock.timers.reset();
+  }
+});
+
+test("a visit that pairs within the minute isn't counted as unpaired", async () => {
+  mock.timers.enable({ apis: ["setTimeout", "Date"], now: Date.now() });
+  try {
+    usage.startVisit("direct");
+    usage.checkUnpairedLater(() => false);
+    mock.timers.tick(20_000);
+    usage.markPaired("computer", [{ role: "phone", ios: true }]);
+    mock.timers.tick(60_000);
+    await flush();
+    assert.equal(rows().filter((r) => r.event === "unpaired").length, 0);
+  } finally {
+    mock.timers.reset();
+  }
 });
