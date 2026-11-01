@@ -45,13 +45,22 @@ async function deleteFromStorage(paths) {
   }
 }
 
+/** The file is no longer in storage: it expired, or the other device removed it while this one wasn't listening. */
+export class FileUnavailableError extends Error {}
+
+async function fetchDownload(fileObj, init) {
+  const resp = await fetch(fileObj.downloadUrl, init);
+  if (resp.status === 404) throw new FileUnavailableError(`Download failed (${resp.status})`);
+  if (!resp.ok || !resp.body) throw new Error(`Download failed (${resp.status})`);
+  return resp;
+}
+
 /**
  * Fetches an encrypted file and tells the two formats apart by their first bytes:
  * chunked files come back as a stream (decrypted chunk by chunk), single-shot files as a Blob.
  */
 async function openEncryptedDownload(fileObj) {
-  const resp = await fetch(fileObj.downloadUrl, { cache: "no-store" });
-  if (!resp.ok || !resp.body) throw new Error(`Download failed (${resp.status})`);
+  const resp = await fetchDownload(fileObj, { cache: "no-store" });
   const reader = resp.body.getReader();
   const peeked = [];
   let peekedBytes = 0;
@@ -111,7 +120,7 @@ export async function ensureDecryptedBlob(fileObj, onProgress) {
         blob = await decryptChunkedToBlob(download.stream, state.cryptoKey, fileObj.mimeType);
       }
     } else {
-      blob = await (await fetch(fileObj.downloadUrl)).blob();
+      blob = await (await fetchDownload(fileObj)).blob();
     }
     fileObj.blob = blob;
     return blob;
@@ -190,9 +199,40 @@ export async function getShareableFile(fileObj) {
   return null;
 }
 
+/** Drops a file whose download 404'd and tells the user why, instead of leaving a dead entry in the list. */
+function markFileUnavailable(fileObj) {
+  const idx = state.sharedFiles.findIndex((f) => f.id === fileObj.id);
+  if (idx !== -1) state.sharedFiles.splice(idx, 1);
+  state.selectedFileIds.delete(fileObj.id);
+  if (fileObj.storagePath) state.roomUploadedFiles.delete(fileObj.storagePath);
+  renderFiles(state.sharedFiles);
+
+  const statusEl = getRole() === "computer" ? $("#desktop-file-status") : $("#phone-file-status");
+  const msg = `"${fileObj.originalName}" is no longer available. It expired or was removed.`;
+  setStatus(statusEl, msg);
+  setTimeout(() => {
+    if (statusEl && statusEl.textContent === msg) setStatus(statusEl, "");
+  }, 6000);
+}
+
+export function reportDownloadFailure(fileObj, err) {
+  if (err instanceof FileUnavailableError) {
+    markFileUnavailable(fileObj);
+    return;
+  }
+  console.error("Failed to decrypt file:", err);
+  alert("Could not decrypt file. Please verify room encryption key.");
+}
+
+/** Never rejects, so callers can fire it without awaiting; returns whether the download started. */
 export async function triggerFileDownload(fileObj) {
   if (fileObj.isEncrypted && !fileObj.blob) {
-    await ensureDecryptedBlob(fileObj);
+    try {
+      await ensureDecryptedBlob(fileObj);
+    } catch (err) {
+      reportDownloadFailure(fileObj, err);
+      return false;
+    }
   }
   let url = fileObj.downloadUrl;
   let revokeUrl = false;
@@ -211,6 +251,7 @@ export async function triggerFileDownload(fileObj) {
   if (revokeUrl) {
     setTimeout(() => URL.revokeObjectURL(url), 30000);
   }
+  return true;
 }
 
 export function calculateFileHandOffDelay(fileOrFiles, action = "downloaded") {
@@ -274,9 +315,11 @@ export function onFileHandedOff(fileOrFiles, action = "downloaded", customDelayM
   // Remove locally after delayMs so that browser download manager has initiated and streamed the transfer
   setTimeout(async () => {
     const pathsToDelete = [];
+    let removedCount = 0;
     for (const file of files) {
       const idx = state.sharedFiles.findIndex((f) => f.id === file.id);
       if (idx !== -1) {
+        removedCount++;
         if (file.storagePath && state.roomUploadedFiles.has(file.storagePath)) {
           pathsToDelete.push(file.storagePath);
           state.roomUploadedFiles.delete(file.storagePath);
@@ -289,6 +332,8 @@ export function onFileHandedOff(fileOrFiles, action = "downloaded", customDelayM
       deleteFromStorage(pathsToDelete);
     }
     renderFiles(state.sharedFiles);
+    // Files that turned out to be gone were already dropped with their own message
+    if (removedCount === 0) return;
 
     const localMsg = files.length === 1
       ? `✓ "${fileNames[0]}" ${actionPast} and removed`
@@ -375,7 +420,7 @@ export async function expireFile(fileId) {
 
   const role = getRole();
   const statusEl = role === "computer" ? $("#desktop-file-status") : $("#phone-file-status");
-  const expireMsg = `File "${file.originalName}" expired (10m limit) and was deleted`;
+  const expireMsg = `File "${file.originalName}" expired (${FILE_TTL_MS / 60000}m limit) and was deleted`;
   setStatus(statusEl, expireMsg);
   setTimeout(() => {
     if (statusEl && statusEl.textContent === expireMsg) {
@@ -387,11 +432,17 @@ export async function expireFile(fileId) {
 export async function initiateBulkDownload(selectedFiles, btnEl) {
   selectedFiles = (selectedFiles || []).filter((f) => !isLockedFile(f));
   if (selectedFiles.length === 0) return;
-  try {
-    await Promise.all(selectedFiles.map((f) => ensureDecryptedBlob(f)));
-  } catch (err) {
-    console.warn("Pre-decrypting bulk files warning:", err);
+  const results = await Promise.allSettled(selectedFiles.map((f) => ensureDecryptedBlob(f)));
+  const errors = results.filter((r) => r.status === "rejected").map((r) => r.reason);
+  selectedFiles.forEach((f, i) => {
+    if (results[i].reason instanceof FileUnavailableError) markFileUnavailable(f);
+  });
+  if (errors.some((err) => !(err instanceof FileUnavailableError))) {
+    console.error("Failed to decrypt files:", errors);
+    alert("Could not decrypt file. Please verify room encryption key.");
   }
+  selectedFiles = selectedFiles.filter((_, i) => results[i].status === "fulfilled");
+  if (selectedFiles.length === 0) return;
   const isZip = isDesktopComputer() && selectedFiles.length > 1;
   const delayMs = isZip ? 1500 : Math.max(1500, selectedFiles.length * 350);
 
@@ -511,7 +562,9 @@ export function handleFileReady(payload, role) {
     size: size || 0,
     downloadUrl,
     storagePath,
-    expiresAt: expiresAt || (Date.now() + FILE_TTL_MS),
+    // expiresAt is on the sender's clock; a sender running fast would otherwise keep the file listed here after
+    // storage has already deleted it, so never count down longer than a fresh file's lifetime
+    expiresAt: Math.min(expiresAt || Infinity, Date.now() + FILE_TTL_MS),
     senderDevice: senderDevice || (role === "computer" ? "Phone" : "Computer"),
     isEncrypted: Boolean(payload.isEncrypted)
   };
@@ -765,8 +818,7 @@ export function renderFiles(files) {
             }
             onFileHandedOff(file, "downloaded", 1500);
           } catch (err) {
-            console.error("Failed to decrypt file:", err);
-            alert("Could not decrypt file. Please verify room encryption key.");
+            reportDownloadFailure(file, err);
           } finally {
             downloadLink.textContent = "Download";
           }
@@ -778,8 +830,7 @@ export function renderFiles(files) {
             triggerFileDownload(file);
             onFileHandedOff(file, "downloaded", 1500);
           } catch (err) {
-            console.error("Failed to decrypt file:", err);
-            alert("Could not decrypt file. Please verify room encryption key.");
+            reportDownloadFailure(file, err);
           } finally {
             downloadLink.textContent = "Download";
           }

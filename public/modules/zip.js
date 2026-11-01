@@ -161,9 +161,11 @@ export async function downloadFilesAsZip(fileObjs, btnEl, triggerFileDownload) {
     const entries = [];
     for (const fileObj of fileObjs) {
       let data = fileObj.blob;
-      if (!data && fileObj.downloadUrl) {
+      // An encrypted file without a blob failed to decrypt; fetching it would zip ciphertext under the real name
+      if (!data && fileObj.downloadUrl && !fileObj.isEncrypted) {
         try {
           const resp = await fetch(fileObj.downloadUrl);
+          if (!resp.ok) throw new Error(`Download failed (${resp.status})`);
           data = await resp.blob();
         } catch (e) {
           console.error("Failed to load file blob for zip:", e);
