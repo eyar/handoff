@@ -120,7 +120,7 @@ shortcut_data = {
         "WFAVAssetContentItem",
     ],
     "WFWorkflowIcon": {
-        "WFWorkflowIconGlyphNumber": 59487,  # Screen / Devices glyph
+        "WFWorkflowIconGlyphNumber": 59708,
         "WFWorkflowIconStartColor": ICON_COLOR,
     },
     "WFWorkflowActions": [
