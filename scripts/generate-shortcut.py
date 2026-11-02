@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Builds and signs the "Handoff to PC" iOS Share Sheet shortcut.
+"""Builds and signs the "Handoff" iOS Share Sheet shortcut.
 
   python3 scripts/generate-shortcut.py          -> public/shortcut/handoff-to-pc.shortcut
   python3 scripts/generate-shortcut.py --dev    -> public/shortcut/handoff-to-pc-dev.shortcut (tunnel host)
 
-The install page downloads it as "Handoff to PC.shortcut" (via the link's download attribute).
+The install page downloads it as "Handoff.shortcut" (via the link's download attribute).
 The main install button links to an iCloud copy instead: after changing the shortcut, add the new
 file to the Shortcuts app, share it as an iCloud link, and update the link in public/shortcut/index.html.
 

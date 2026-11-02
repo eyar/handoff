@@ -27,7 +27,7 @@ Open [handoffdrop.app](https://handoffdrop.app) on your computer, scan the QR co
 - 📦 **Large File Support (Up to 1.5 GB):** Encrypted in 8 MB chunks and streamed through Cloudflare R2, so memory stays flat even on iPhones.
 - ⏳ **Strictly Ephemeral:** Uploaded files auto-delete after 15 minutes (or immediately upon receipt). Text vanishes after 60 seconds.
 - 🖼️ **On-the-Fly HEIC Conversion:** Automatically converts Apple HEIC photos to standard JPEG for instant compatibility on Windows and Android.
-- 📲 **iOS Shortcut & PWA Share Target:** Send photos and documents straight from the iOS or Android Share Sheet using the included "Handoff to PC" shortcut.
+- 📲 **iOS Shortcut & PWA Share Target:** Send photos and documents straight from the iOS or Android Share Sheet using the included "Handoff" shortcut.
 - 🧩 **Chrome Extension:** Right-click any link, image, or selection to [send it to your phone](https://chromewebstore.google.com/detail/jmjapgakklfhafbgheccblmkhnmbmnkd), with Handoff in the side panel.
 - 💻 **Computer-to-Computer Bridge:** Use a phone to scan two computers' QR codes and bridge a high-speed file pipeline between both desktops.
 - 💸 **100% Free:** No subscriptions, paywalls, or feature limits.
