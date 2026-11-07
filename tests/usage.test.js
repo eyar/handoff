@@ -147,3 +147,35 @@ test("a visit that pairs within the minute isn't counted as unpaired", async () 
     mock.timers.reset();
   }
 });
+
+test("nothing is logged once the visitor turns usage counts off", async () => {
+  const { setTelemetryEnabled } = await import("../public/modules/telemetry.js");
+  const store = new Map();
+  globalThis.localStorage = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, String(v)), removeItem: (k) => store.delete(k) };
+  try {
+    setTelemetryEnabled(false);
+    usage.startVisit("direct");
+    usage.logFileTransfer({ role: "phone", peers: [{ role: "computer" }], size: MB, outcome: "ok" });
+    await flush();
+    assert.equal(rows().length, 0);
+
+    setTelemetryEnabled(true);
+    sessionStorage.clear();
+    usage.startVisit("direct");
+    await flush();
+    assert.equal(rows().length, 1);
+  } finally {
+    delete globalThis.localStorage;
+  }
+});
+
+test("nothing is logged when the browser sends Global Privacy Control", async () => {
+  navigator.globalPrivacyControl = true;
+  try {
+    usage.startVisit("direct");
+    await flush();
+    assert.equal(rows().length, 0);
+  } finally {
+    delete navigator.globalPrivacyControl;
+  }
+});

@@ -1454,6 +1454,62 @@ textarea:focus-visible {
   margin: 0;
 }
 
+.site-footer-telemetry {
+  max-width: 560px;
+  line-height: 1.5;
+}
+
+.site-footer-telemetry a {
+  color: #475569;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.site-footer-telemetry a:hover {
+  color: #16a34a;
+}
+
+/* Privacy page: opt-out switch for usage counts and error reports */
+.telemetry-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0 24px;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.telemetry-control p,
+.legal-card .telemetry-control p {
+  margin: 0;
+  flex: 1 1 240px;
+}
+
+.telemetry-control button {
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.telemetry-control button:hover {
+  border-color: #94a3b8;
+}
+
+/* The global button display rule would otherwise beat the hidden attribute */
+.telemetry-control button[hidden] {
+  display: none;
+}
+
 /* Legal Document Card & Typography */
 .legal-shell {
   width: min(100% - 32px, 760px);

@@ -1,6 +1,7 @@
 // Anonymous usage counts: how many visits end up paired, and whether transfers go through.
 // Each row is an event name plus a few coarse buckets. No room id, key, IP, user agent, file name or exact size.
 import { supabase } from "./supabaseClient.js";
+import { telemetryAllowed } from "./telemetry.js";
 
 // One visit per browser tab, so a reload or a restored session isn't counted twice
 const VISIT_KEY = "handoff_usage_visit";
@@ -82,7 +83,7 @@ function isAutomated() {
 }
 
 async function logEvent(event, props) {
-  if (isAutomated()) return;
+  if (isAutomated() || !telemetryAllowed()) return;
   try {
     await supabase.from("usage_events").insert({ event, props });
   } catch (_) {

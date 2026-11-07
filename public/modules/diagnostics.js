@@ -1,5 +1,6 @@
 import { supabase } from "./supabaseClient.js";
 import { state } from "./state.js";
+import { telemetryAllowed } from "./telemetry.js";
 
 const MAX_DIAGNOSTIC_EVENTS = 25;
 const diagnosticEvents = [];
@@ -37,6 +38,9 @@ export async function logErrorToSupabase(eventType, errorOrMsg, details = null) 
 
     // Always record locally in memory
     recordDiagnostic(eventType, errorMsg, details);
+
+    // Stays in the local Diagnostics report only, when the visitor opted out
+    if (!telemetryAllowed()) return;
 
     // Deduplicate and throttle database writes
     const dedupeKey = `${eventType}:${errorMsg}`;

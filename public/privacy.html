@@ -27,7 +27,7 @@
           <h1>Privacy Policy</h1>
           <div class="legal-meta">
             <span class="pill">Privacy-by-Design</span>
-            <span>Last updated: October 30, 2026</span>
+            <span>Last updated: November 7, 2026</span>
           </div>
         </header>
 
@@ -85,9 +85,19 @@
           <p>
             We also use Cloudflare Analytics to understand aggregate traffic and performance. Depending on the metric, this can include page views, page path and referring source, device and browser type, approximate country, and page-load performance. We use these aggregate measurements only to improve reliability and performance; we do not use them for advertising or to build individual user profiles. Cloudflare states that Web Analytics does not use cookies and that its beacon discards the visitor's IP address at the nearest data center instead of storing it in analytics records.
           </p>
-          <p>
+          <p id="usage-data">
             To see whether Handoff works, the app also records anonymous usage counts: that a visit started, that it got two devices connected (or, if it hasn't after a minute, whether it could reach our server), and whether each transfer succeeded, failed or was cancelled. Each record holds only coarse categories: how the visit began (for example the iOS Shortcut or a scanned QR code), the kind of device (iPhone, Android or computer), which kinds of device were paired, roughly how long pairing took, and a file size range such as "1–10 MB". It never includes a room ID, encryption key, IP address, browser User-Agent, file name, file content or exact size, and its time is rounded to the hour, so it can't be linked to a person or a transfer. These counts are kept for <strong>90 days</strong>.
           </p>
+          <p>
+            When something goes wrong, the app also sends an error report: the type of error, its message and technical details (such as which part of the app failed), the browser User-Agent, and the ID of the current room, so we can tell whether several reports came from the same transfer. Reports never include file names, file or text content, or encryption keys. At most five are sent per visit; they are stored for <strong>48 hours</strong> and forwarded as a private alert to the developer through Discord.
+          </p>
+          <p>
+            <strong>Turning it off:</strong> use the switch below to stop this browser sending usage counts and error reports. If your browser sends a Global Privacy Control or Do Not Track signal, Handoff sends neither, with no action needed. This doesn't affect Cloudflare Web Analytics, which is described above, or the standard technical logs our infrastructure keeps.
+          </p>
+          <div class="telemetry-control" id="telemetry-control" hidden>
+            <p id="telemetry-status"></p>
+            <button type="button" id="telemetry-toggle"></button>
+          </div>
 
           <h2>3. Cookies &amp; Local Storage</h2>
           <p>
@@ -96,6 +106,7 @@
           <ul>
             <li><strong>No Tracking Cookies:</strong> We do not use third-party tracking cookies, advertising pixels (such as Meta Pixel or Google Ads tags), or cross-site user fingerprinting.</li>
             <li><strong>Functional Session Storage:</strong> We use your browser's native <code>sessionStorage</code> and URL hash fragments solely for essential functionality—specifically, to maintain your active room identifier and ephemeral encryption key in client memory. This data is strictly temporary and is cleared when you end the session or close the tab.</li>
+            <li><strong>Your Opt-Out Choice:</strong> If you turn off usage counts and error reports, that choice is saved in this browser's <code>localStorage</code> so it lasts between visits. It is never sent to us.</li>
           </ul>
 
           <h2>4. Third-Party Infrastructure &amp; Subprocessors</h2>
@@ -126,6 +137,12 @@
                   <td>Temporary uploaded files (end-to-end encrypted ciphertext, except for the transfers listed in Section 2; expire after 15 minutes, or immediately upon download/session end), standard network transit logs, aggregate page-view and performance metrics.</td>
                   <td>Global Edge Network / United States</td>
                 </tr>
+                <tr>
+                  <td><strong>Discord Inc.</strong></td>
+                  <td>Private error alerts to the developer.</td>
+                  <td>Error reports as described in Section 2 (error type, message and details, browser User-Agent, room ID).</td>
+                  <td>United States</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -138,7 +155,7 @@
             <li><strong>Transferred Files:</strong> Each uploaded file automatically deletes immediately upon download or sharing by the recipient, or expires <strong>15 minutes</strong> after upload. If the user clicks "End handoff", all session files are deleted immediately. Scheduled automated cleanup permanently removes expired files from temporary storage.</li>
             <li><strong>Transferred Text:</strong> <strong>0 seconds</strong>. Relayed in-memory only and never persisted to storage. Automatically purged from screen when copied, shared, or after 1 minute of inactivity.</li>
             <li><strong>Room Session:</strong> Active during your transfer session and terminated immediately upon clicking "End handoff" or closing the browser tab.</li>
-            <li><strong>Anonymous Technical Diagnostics:</strong> To proactively resolve technical failures (e.g. WebSocket interruptions or upload failures), anonymous technical error logs (error event type and browser user-agent, free of any file content or personal identity) are automatically purged after <strong>48 hours</strong> by our scheduled cleanup task.</li>
+            <li><strong>Error Reports:</strong> Error reports (described in Section 2: error type, message and details, browser User-Agent and room ID, with no file names, content or keys) are automatically purged after <strong>48 hours</strong> by our scheduled cleanup task.</li>
             <li><strong>Anonymous Usage Counts:</strong> Visit, pairing and transfer counts (described in Section 2) are automatically purged after <strong>90 days</strong> by our scheduled cleanup task.</li>
           </ul>
 
@@ -198,5 +215,6 @@
         <p class="site-footer-copy">&copy; 2026 Handoff. Ephemeral, private device sharing.</p>
       </footer>
     </div>
+    <script type="module" src="/modules/privacyPage.js"></script>
   </body>
 </html>
